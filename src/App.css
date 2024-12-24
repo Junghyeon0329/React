@@ -1,5 +1,9 @@
 .App {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
 }
 
 .App-logo {
@@ -35,4 +39,88 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* 전체 페이지 스타일 */
+/* body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+} */
+
+.login-container {
+  background: rgba(255, 255, 255, 0.9); /* 배경을 반투명하게 */
+  padding: 40px;
+  border-radius: 12px; /* 모서리 둥글게 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+form div {
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2575fc;
+  background-color: #fff;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #2575fc;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1e66d0; /* hover 시 색상 변경 */
+}
+
+button:active {
+  background-color: #1a59c3; /* 클릭 시 색상 변경 */
+}
+
+p {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 10px;
 }

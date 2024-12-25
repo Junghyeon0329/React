@@ -1,5 +1,91 @@
-/* 기존 App.css */
+/* 공통 스타일: 버튼과 입력 필드 */
+.input-field, .submit-button {
+  width: 260px;  /* 가로 사이즈를 260px로 고정 */
+  padding: 12px;
+  margin: 5px 0;  /* 위아래 여백 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비 계산 */
+  font-size: 16px;
+  border-radius: 8px;
+}
 
+.input-field {
+  border: 1px solid #ddd;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #2575fc;
+  background-color: #fff;
+}
+
+.submit-button {
+  background-color: #2575fc;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 260px;  /* 버튼의 너비를 260px로 고정 */
+}
+
+.submit-button:hover {
+  background-color: #1e66d0; /* hover 시 색상 변경 */
+}
+
+.submit-button:active {
+  background-color: #1a59c3; /* 클릭 시 색상 변경 */
+}
+
+/* 오류 메시지 스타일 */
+.error-message {
+  color: red;
+  font-size: 16px;  /* 입력 필드와 동일한 폰트 크기 */
+  margin-top: 5px;
+  text-align: left;
+}
+
+/* 기본 모달 스타일 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 콘텐츠 스타일 */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 100%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 닫기 버튼 스타일 */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* 기본 페이지 스타일 */
 .App {
   display: flex;
   justify-content: center;
@@ -14,12 +100,6 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -31,24 +111,13 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
+/* 로그인 화면 관련 스타일 */
 .login-container {
   background: rgba(255, 255, 255, 0.9);
-  padding: 40px;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  width: 300px;
   max-width: 400px;
   text-align: center;
   display: flex;
@@ -57,6 +126,7 @@
 }
 
 h1 {
+  margin-top: 5px;
   font-size: 36px;
   color: black;
 }
@@ -76,28 +146,13 @@ label {
   font-size: 14px;
   color: #333;
   margin-bottom: 5px;
-  display: block;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  background-color: #f7f7f7;
-  color: #333;
-}
-
-input:focus {
-  outline: none;
-  border-color: #2575fc;
-  background-color: #fff;
+  display: inline-block; /* 라벨을 인라인 블록 요소로 처리 */
+  text-align: left; /* 왼쪽 정렬 */
+  width: 80%; /* label이 전체 너비를 차지하도록 설정 */
 }
 
 button {
-  width: 100%;
+  width: 90%;
   padding: 14px;
   font-size: 16px;
   color: #fff;
@@ -120,4 +175,46 @@ p {
   color: #e74c3c;
   font-size: 14px;
   margin-top: 10px;
+}
+
+/* 링크 스타일: 회원가입, 비밀번호 초기화 */
+.link-container {
+  display: flex;
+  justify-content: space-between;  /* 왼쪽, 오른쪽 배치 */
+  width: 100%;  /* 가로 전체 너비 */
+  margin-top: 10px; /* 여백 조정 */
+  white-space: nowrap; /* 텍스트가 한 줄에 표시되도록 설정 */
+}
+
+.link-container p {
+  margin: 0; /* 기본 여백 없애기 */
+  font-size: 14px; /* 텍스트 크기를 적당하게 설정 */
+}
+
+.link-container a {
+  font-size: 12px; /* 글자 크기 조정 (5px는 너무 작아서 12px로 변경) */
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap; /* 텍스트가 줄 바꿈 없이 한 줄에 배치되도록 설정 */
+}
+
+.link-container a:hover {
+  text-decoration: underline;
+}
+
+/* 애니메이션과 미디어 쿼리 관련 */
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

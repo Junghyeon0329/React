@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_URLS from './api';
 // import { useNavigate } from 'react-router-dom';  // 페이지 이동을 위한 hook
 
 function Login() {
@@ -28,29 +29,30 @@ function Login() {
     }
 
     try {
-      // API로 이메일과 비밀번호 전송 (localhost:8000)
-      const response = await axios.post('http://localhost:8000/login/', {
+      const response = await axios.post(API_URLS.LOGIN, {
         email: email,
         password: password,
       });
-
+    
       // 로그인 성공
-      const { token } = response.data;  // 서버에서 반환된 토큰
+      const { access, refresh } = response.data; 
+      
+      if (access && refresh) {
+        // 액세스 토큰과 리프레시 토큰을 localStorage에 저장
+        localStorage.setItem('access_token', access);
+        localStorage.setItem('refresh_token', refresh);
 
-      if (token) {
-        // 토큰을 localStorage에 저장
-        localStorage.setItem('token', token);
-
-        // 로그인 성공 메시지
-        setError('');
-        alert('로그인 성공!');
-
+        // 로그인 성공 메시지 (서버에서 반환된 메시지)
+        setError('');  // 에러 메시지 초기화
+        alert('로그인 성공!');  // 서버에서 제공된 메시지가 있으면 그것을 표시
+    
         // 다른 페이지로 이동 (예: 대시보드 페이지로 이동)
         // navigate('/dashboard');
       }
     } catch (error) {
       // 로그인 실패 처리
       setError('아이디 또는 비밀번호가 잘못되었습니다.');
+      alert('로그인 실패');
     }
   };
 

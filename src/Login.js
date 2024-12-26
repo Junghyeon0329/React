@@ -39,7 +39,7 @@ function Login() {
 
     // 이메일 또는 비밀번호가 비어 있을 경우 에러 메시지 설정
     if (email === '' || password === '') {
-      setError('아이디와 비밀번호를 모두 입력해주세요.');
+      setError('이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
 
@@ -61,7 +61,7 @@ function Login() {
       }
     } catch (error) {
       // 로그인 실패 시 에러 메시지 설정
-      setError('아이디 또는 비밀번호가 잘못되었습니다.');
+      setError('이메일 또는 비밀번호가 잘못되었습니다.');
     }
   };
 
@@ -95,17 +95,17 @@ function Login() {
 
     // 이메일이 비어 있을 경우 경고
     if (resetEmail === '') {
-      alert('필수 항목을 모두 입력해주세요.');
+      alert('이메일을 입력해주세요.');
       return;
     }
 
     try {
       // 비밀번호 초기화 API 요청
-      await axios.post(API_URLS.USER, {
+      await axios.put(API_URLS.LOGIN, {
         email: resetEmail,
       });
 
-      alert('비밀번호 초기화가 완료되었습니다.');
+      alert('비밀번호 초기화 링크가 전달 완료되었습니다.');
       setShowResetPassword(false); // 비밀번호 초기화 모달 닫기
     } catch (error) {
       alert('비밀번호 초기화 실패');
@@ -177,6 +177,7 @@ function Login() {
           <button 
             type="button" 
             onClick={() => { 
+              setResetEmail('');
               setShowResetPassword(true); // 비밀번호 초기화 모달 열기
               setShowSignUp(false); // 회원가입 모달 닫기
             }} 

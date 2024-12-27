@@ -32,35 +32,93 @@ function PasswordResetForm() {
       }
   };
 
-  return (
-    <div>
-      <h2>비밀번호 재설정</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="password">새 비밀번호</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="confirmPassword">비밀번호 확인</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">비밀번호 재설정</button>
-      </form>
+  // return (
+  //   <div>
+  //     <h2>비밀번호 재설정</h2>
+  //     <form onSubmit={handleSubmit}>
+  //       <div>
+  //         <label htmlFor="password">새 비밀번호</label>
+  //         <input
+  //           type="password"
+  //           id="password"
+  //           value={password}
+  //           onChange={(e) => setPassword(e.target.value)}
+  //           required
+  //         />
+  //       </div>
+  //       <div>
+  //         <label htmlFor="confirmPassword">비밀번호 확인</label>
+  //         <input
+  //           type="password"
+  //           id="confirmPassword"
+  //           value={confirmPassword}
+  //           onChange={(e) => setConfirmPassword(e.target.value)}
+  //           required
+  //         />
+  //       </div>
+  //       {error && <p style={{ color: 'red' }}>{error}</p>}
+  //       <button type="submit">비밀번호 재설정</button>
+  //     </form>
+  //   </div>
+  // );
+
+
+return (
+  <div className="login-container">
+    <h1>비밀번호 재설정</h1>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="password">새 비밀번호</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="새로운 비밀번호를 입력하세요"
+          className="input-field" 
+        />
+      </div>
+      <div>
+        <label htmlFor="confirmPassword">비밀번호 확인</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="비밀번호를 다시 한번 입력하세요"
+          className="input-field" 
+        />
+      </div>
+            
+      {/* 에러 메시지를 위한 공간 */}
+      <p style={{
+        color: 'red', 
+        minHeight: '20px', // 최소 높이를 설정하여 공간을 확보
+        visibility: error ? 'visible' : 'hidden', // error가 있을 때만 보이도록 설정
+        marginTop: '10px', // 여백 추가
+      }}>
+        {error}
+      </p>
+
+      <button type="submit" className="submit-button">비밀번호 재설정</button>
+    </form>
+
     </div>
   );
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
 
 export default PasswordResetForm;

@@ -1,26 +1,41 @@
 import React from 'react';
 import './App.css';
-import Login from './Login';  // 기존의 로그인 컴포넌트
-import PasswordResetForm from './PasswordResetForm';  // 비밀번호 재설정 폼 컴포넌트
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';  // React Router import (Switch -> Routes)
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Login/Login';  // 로그인 컴포넌트
+import UserProfile from './components/UserProfile/UserProfile';  // 사용자 프로필 컴포넌트
+import PasswordResetForm from './components/PasswordReset/PasswordReset';  // 비밀번호 재설정 컴포넌트
+import PasswordChange from './components/PasswordChange/PasswordChange';  // 비밀번호 변경 컴포넌트
+import Board from './components/Board/Board';  // 게시판 컴포넌트
+import { UserProvider } from './contexts/UserContext';  // 사용자 정보 제공 Context
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        {/* 라우팅 설정 */}
-        <Routes>
-          {/* 로그인 페이지 */}
-          <Route exact path="/" element={<Login />} />
+    <UserProvider>
+      <Router>
+        <div className="App">
+          {/* 라우팅 설정 */}
+          <Routes>
+            {/* 로그인 페이지 */}
+            <Route path="/" element={<Login />} />
 
-          {/* 비밀번호 재설정 페이지 */}
-          <Route exact path="/reset-password/:uid/:token" element={<PasswordResetForm />} />
+            {/* 비밀번호 재설정 페이지 */}
+            <Route path="/reset-password/:uid/:token" element={<PasswordResetForm />} />
 
-          {/* 나머지 경로는 404 페이지로 처리 */}
-          <Route path="*" element={<h1>Page Not Found</h1>} />
-        </Routes>
-      </div>
-    </Router>
+            {/* 사용자 프로필 페이지 */}
+            <Route path="/profile" element={<UserProfile />} />
+
+            {/* 비밀번호 변경 페이지 */}
+            <Route path="/change-password" element={<PasswordChange />} />
+
+            {/* 게시판 페이지 */}
+            <Route path="/board" element={<Board />} />
+
+            {/* 404 페이지 */}
+            <Route path="*" element={<h1>Page Not Found</h1>} />
+          </Routes>
+        </div>
+      </Router>
+    </UserProvider>
   );
 }
 

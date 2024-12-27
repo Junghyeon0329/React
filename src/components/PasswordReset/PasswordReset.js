@@ -13,6 +13,11 @@ function PasswordResetForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (password === '' || confirmPassword === '') {
+      setError('항목을 모두 입력해주세요.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('비밀번호와 확인 비밀번호가 일치하지 않습니다.');
       return;

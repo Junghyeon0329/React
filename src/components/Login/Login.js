@@ -6,18 +6,18 @@ import './Login.css'; // CSS 파일 import
 
 function Login() {
   // 로그인 폼 관련 상태 변수들
-  const [email, setemail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setemail] = useState(''); // 로그인 시 입력한 이메일을 저장
+  const [password, setPassword] = useState(''); // 로그인 시 입력한 비밀번호를 저장
+  const [error, setError] = useState(''); // 로그인 시 발생하는 오류 메시지 저장
 
   // 회원가입 폼 관련 상태 변수들
-  const [showSignUp, setShowSignUp] = useState(false);
-  const [signUpEmail, setSignUpEmail] = useState('');
-  const [signUpPassword, setSignUpPassword] = useState('');
+  const [showSignUp, setShowSignUp] = useState(false); // 회원가입 모달 표시 여부
+  const [signUpEmail, setSignUpEmail] = useState(''); // 회원가입 시 입력한 이메일
+  const [signUpPassword, setSignUpPassword] = useState(''); // 회원가입 시 입력한 비밀번호
 
   // 비밀번호 초기화 관련 상태 변수들
-  const [showResetPassword, setShowResetPassword] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
+  const [showResetPassword, setShowResetPassword] = useState(false); // 비밀번호 초기화 모달 표시 여부
+  const [resetEmail, setResetEmail] = useState(''); // 비밀번호 초기화 시 입력한 이메일
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,7 +64,7 @@ function Login() {
     }
 
     try {
-      await axios.put(API_URLS.RESET_PASSWORD, { email: resetEmail });
+      await axios.put(API_URLS.LOGIN, { email: resetEmail });
       alert('비밀번호 초기화 링크가 전달 완료되었습니다.');
       setShowResetPassword(false);
     } catch (error) {
@@ -99,7 +99,13 @@ function Login() {
           />
         </div>
 
-        <p style={{ color: 'red', visibility: error ? 'visible' : 'hidden', marginTop: '10px' }}>
+        {/* 에러 메시지를 위한 공간 */}
+        <p style={{
+          color: 'red', 
+          minHeight: '20px', // 최소 높이를 설정하여 공간을 확보
+          visibility: error ? 'visible' : 'hidden', // error가 있을 때만 보이도록 설정
+          marginTop: '10px', // 여백 추가
+        }}>
           {error}
         </p>
 
@@ -107,8 +113,19 @@ function Login() {
       </form>
 
       <div className="link-container">
-        <button onClick={() => { setShowSignUp(true); setShowResetPassword(false); }}>회원가입</button>
-        <button onClick={() => { setShowResetPassword(true); setShowSignUp(false); }}>비밀번호 초기화</button>
+        <button onClick={() => { 
+            setSignUpEmail('');
+            setSignUpPassword('');
+            setShowSignUp(true); 
+            setShowResetPassword(false); 
+            }}>회원가입
+          </button>
+        <button onClick={() => { 
+            setResetEmail('');
+            setShowResetPassword(true); 
+            setShowSignUp(false); 
+            }}>비밀번호 초기화
+          </button>
       </div>
 
       {/* 회원가입 모달 표시 */}
@@ -116,8 +133,22 @@ function Login() {
         <FormModal
           title="회원가입"
           fields={[
-            { id: 'signUpEmail', label: '이메일', type: 'email', value: signUpEmail, onChange: (e) => setSignUpEmail(e.target.value) },
-            { id: 'signUpPassword', label: '비밀번호', type: 'password', value: signUpPassword, onChange: (e) => setSignUpPassword(e.target.value) }
+            { 
+              id: 'signUpEmail', 
+              label: '이메일',
+              type: 'email', 
+              value: signUpEmail, 
+              placeholder: '이메일을 입력하세요',
+              onChange: (e) => setSignUpEmail(e.target.value) 
+            },
+            { 
+              id: 'signUpPassword', 
+              label: '비밀번호', 
+              type: 'password', 
+              value: signUpPassword, 
+              placeholder: '비밀번호를 입력하세요',
+              onChange: (e) => setSignUpPassword(e.target.value) 
+            }
           ]}
           onSubmit={handleSignUpSubmit}
           onClose={() => setShowSignUp(false)}
@@ -129,7 +160,13 @@ function Login() {
         <FormModal
           title="비밀번호 초기화"
           fields={[
-            { id: 'resetEmail', label: '이메일', type: 'email', value: resetEmail, onChange: (e) => setResetEmail(e.target.value) }
+            {
+              id: 'resetEmail', 
+              label: '이메일', 
+              type: 'email', 
+              value: resetEmail, 
+              placeholder: '이메일을 입력하세요',
+              onChange: (e) => setResetEmail(e.target.value) }
           ]}
           onSubmit={handleResetPasswordSubmit}
           onClose={() => setShowResetPassword(false)}

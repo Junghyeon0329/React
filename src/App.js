@@ -6,6 +6,7 @@ import UserProfile from './components/UserProfile/UserProfile';  // 사용자 �
 import PasswordResetForm from './components/PasswordReset/PasswordReset';  // 비밀번호 재설정 컴포넌트
 import PasswordChange from './components/PasswordChange/PasswordChange';  // 비밀번호 변경 컴포넌트
 import Board from './components/Board/Board';  // 게시판 컴포넌트
+import MainPage from './components/MainPage/MainPage';  // 게시판 컴포넌트
 import { UserProvider } from './contexts/UserContext';  // 사용자 정보 제공 Context
 
 function App() {
@@ -29,6 +30,9 @@ function App() {
 
             {/* 게시판 페이지 */}
             <Route path="/board" element={<Board />} />
+
+            {/* 메인 페이지 */}
+            <Route path="/main" element={<MainPage />} />
 
             {/* 404 페이지 */}
             <Route path="*" element={<h1>Page Not Found</h1>} />

@@ -208,6 +208,28 @@ p {
   text-decoration: underline;
 }
 
+.field-container {
+  margin-bottom: 15px;
+}
+
+/* 라벨 스타일 */
+.field-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* 값 텍스트 스타일 */
+.field-value {
+  font-size: 16px;
+  color: #333;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  word-wrap: break-word; /* 긴 단어가 줄 바꿈되도록 */
+}
+
+
 /* 애니메이션과 미디어 쿼리 관련 */
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

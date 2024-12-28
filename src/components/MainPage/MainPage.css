@@ -1,119 +1,158 @@
 /* 전체 레이아웃 */
 .main-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  /* 사이드바 스타일 */
-  .sidebar {
-    width: 20%;
-    max-width: 250px;
-    min-width: 180px;
-    background: linear-gradient(135deg, #2c3e50, #4a69bd);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    box-sizing: border-box; /* 패딩 포함 너비를 제한 */
-  }
-    
-  /* 유저 카드 */
-  .user-card {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  
-  .user-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    border: 2px solid white;
-  }
-  
-  .user-name {
-    font-size: 1.5em;
-    margin: 5px 0;
-  }
-  
-  .user-info {
-    font-size: 1em;
-    color: #dcdde1;
-  }
-  
-  /* 네비게이션 */
+  display: flex;
+  height: 100%;
+  width: 100%;
+  font-family: 'Arial', sans-serif;
+}
 
-  
-  nav ul li {
-    padding: 15px;
-    margin: 10px 0;
-    width: 200px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  nav ul {
-    list-style: none; /* 기본 리스트 스타일 제거 */
-    padding: 0;
-    margin: 0; /* 추가 여백 제거 */
-    width: 100%;
-  }
-    
-  nav ul li button {
-    width: 100%; /* 버튼 크기를 사이드바에 맞춤 */
-    padding: 10px 0; /* 위아래 여백 */
-    background: none; /* 배경 제거 */
-    border: none; /* 테두리 제거 */
-    outline: none; /* 클릭 시 테두리 제거 */
-    font-size: 1.1em; /* 글씨 크기를 적당히 설정 */
-    text-align: center; /* 글씨 중앙 정렬 */
-    color: white; /* 글씨 색상 */
-    cursor: pointer; /* 마우스 오버 시 커서 변경 */
-    transition: background 0.3s ease; /* 배경색 변화 애니메이션 */
-  }
-  
-  nav ul li button:hover {
-    background: rgba(255, 255, 255, 0.1); /* 호버 시 약간의 배경 강조 */
-    border-radius: 5px; /* 호버 시 버튼 모서리를 둥글게 */
-  }
-    
-  nav ul li:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.05);
-  }
+/* 사이드바 스타일 */
+.sidebar {
+  width: 20%;
+  max-width: 250px;
+  min-width: 180px;
+  background: linear-gradient(135deg, #2c3e50, #4a69bd);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box; /* 패딩 포함 너비를 제한 */
+}
 
+/* 유저 카드 */
+.user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* 버튼 간격 */
+  margin-top: 20px;
+}
 
-  /* 메인 콘텐츠 */
-  .content {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #bdc3c7, #2c3e50);
-    color: white;
-    text-align: center;
-    padding: 40px;
-  }
-  
-  .content-inner {
-    max-width: 600px;
-  }
-  
-  .content-inner h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  
-  .content-inner p {
-    font-size: 1.5em;
-    line-height: 1.6;
-  }
-  
+.user-avatar {
+  width: 200px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 2px solid white;
+}
+
+.user-avatar.no-avatar {
+  background-color: #f0f0f0;
+}
+
+.user-info {
+  font-size: 1em;
+  color: #dcdde1;
+}
+
+/* 네비게이션 */
+nav ul {
+  list-style: none; /* 기본 리스트 스타일 제거 */
+  padding: 0;
+  margin: 0; /* 추가 여백 제거 */
+  width: 100%;
+}
+
+nav ul li {
+  padding: 15px;
+  margin: 10px 0;
+  width: 200px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+nav ul li button {
+  width: 100%; /* 버튼 크기를 사이드바에 맞춤 */
+  padding: 10px 0; /* 위아래 여백 */
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
+  outline: none; /* 클릭 시 테두리 제거 */
+  font-size: 1.1em; /* 글씨 크기를 적당히 설정 */
+  text-align: center; /* 글씨 중앙 정렬 */
+  color: white; /* 글씨 색상 */
+  cursor: pointer; /* 마우스 오버 시 커서 변경 */
+  transition: background 0.3s ease; /* 배경색 변화 애니메이션 */
+}
+
+nav ul li:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* 메인 콘텐츠 */
+.content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #bdc3c7, #2c3e50);
+  color: white;
+  text-align: center;
+  padding: 40px;
+}
+
+.content-inner {
+  max-width: 600px;
+}
+
+.content-inner h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.content-inner p {
+  font-size: 1.5em;
+  line-height: 1.6;
+}
+
+/* 버튼 스타일 */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* 부모 요소의 너비에 맞게 버튼 배치 */
+  gap: 10px;
+}
+
+.user-info-btn, .logout-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  flex: 1; /* 버튼들이 동일한 너비를 가짐 */
+  white-space: nowrap; /* 글자가 한 줄로 배치되도록 설정 */
+}
+
+/* User Info 버튼 스타일 */
+.user-info-btn {
+  background-color: #3b5998; /* 페이스북과 유사한 네이비 색 */
+}
+
+.user-info-btn:hover {
+  background-color: #2d4373; /* 어두운 네이비로 변경 */
+  transform: scale(1.05);
+}
+
+/* Log Out 버튼 스타일 */
+.logout-btn {
+  background-color: #00796b; /* 부드러운 녹색 계열 */
+}
+
+.logout-btn:hover {
+  background-color: #004d40; /* 어두운 녹색으로 변경 */
+  transform: scale(1.05);
+}
+
+/* 버튼이 눌렸을 때의 효과 */
+.user-info-btn:active, .logout-btn:active {
+  transform: scale(1);
+}

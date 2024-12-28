@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import API_URLS from '../../api';
+import API_URLS from '../../api/apiURLS';
 
 function PasswordResetForm() {
   const { uid, token } = useParams();  // URL에서 uid와 token 추출
@@ -30,7 +30,7 @@ function PasswordResetForm() {
       
         if (response.data.success) {
           alert('비밀번호가 성공적으로 변경되었습니다.');
-          navigate('/');  // 로그인 페이지로 리다이렉트
+          navigate('/login');  // 로그인 페이지로 리다이렉트
         }
       } catch (error) {
         setError('비밀번호 재설정에 실패했습니다.');

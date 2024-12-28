@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import API_URLS from '../../api';
 import FormModal from '../FormModal'; 
 import './Login.css'; // CSS 파일 import
+import { useUser } from '../../contexts/UserContext';
 
 function Login() {
   // 로그인 폼 관련 상태 변수들
@@ -19,6 +21,9 @@ function Login() {
   const [showResetPassword, setShowResetPassword] = useState(false); // 비밀번호 초기화 모달 표시 여부
   const [resetEmail, setResetEmail] = useState(''); // 비밀번호 초기화 시 입력한 이메일
 
+  const navigate = useNavigate();  
+  const { loginUser } = useUser();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email === '' || password === '') {
@@ -28,13 +33,16 @@ function Login() {
 
     try {
       const response = await axios.post(API_URLS.LOGIN, { email, password });
-      const { access, refresh } = response.data;
+      const { access, refresh, user } = response.data;
+
       if (access && refresh) {
         localStorage.setItem('access_token', access);
         localStorage.setItem('refresh_token', refresh);
         setError('');
-        alert('로그인 성공!');
+        loginUser(user);
+        navigate('/main');  // 로그인 페이지로 리다이렉트
       }
+      console.log(user)
     } catch (error) {
       setError('이메일 또는 비밀번호가 잘못되었습니다.');
     }

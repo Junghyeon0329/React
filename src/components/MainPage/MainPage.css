@@ -51,6 +51,7 @@
   nav ul li {
     padding: 15px;
     margin: 10px 0;
+    width: 200px;
     text-align: center;
     background: rgba(255, 255, 255, 0.1);
     cursor: pointer;

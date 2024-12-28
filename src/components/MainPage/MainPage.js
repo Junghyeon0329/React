@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './MainPage.css';
+import { useUser } from '../../contexts/UserContext'; // UserContext import
 
-function MainPage() { // 이름을 대문자로 변경
+function MainPage() {
+  const { user } = useUser(); // UserContext에서 유저 정보 가져오기
   const [currentPage, setCurrentPage] = useState('Home');
 
   const getPageContent = () => {
@@ -37,24 +39,26 @@ function MainPage() { // 이름을 대문자로 변경
       <div className="sidebar">
         <div className="user-card">
           <img
-            src="https://via.placeholder.com/100"
+            src={user?.avatar || 'https://via.placeholder.com/100'} // 유저 아바타 표시
             alt="User"
             className="user-avatar"
           />
-          <h2 className="user-name">John Doe</h2>
-          <p className="user-info">john.doe@example.com</p>
+          <p className="user-info">{user?.email || 'GUEST'}</p> {/* 유저 이메일 표시 */}
         </div>
         <nav>
-            <ul>
-                <li><button onClick={() => setCurrentPage('Home')}>Home</button></li>
-                <li><button onClick={() => setCurrentPage('Board')}>Board</button></li>
-                <li><button onClick={() => setCurrentPage('Contact')}>Contact</button></li>
-            </ul>
+          <ul>
+            <li>
+              <button onClick={() => setCurrentPage('Home')}>Home</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage('Board')}>Board</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage('Contact')}>Contact</button>
+            </li>
+          </ul>
         </nav>
       </div>
-
-
-
 
       {/* Main Content */}
       <div className="content">

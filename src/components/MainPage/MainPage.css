@@ -110,10 +110,10 @@ nav ul li:hover {
   box-sizing: border-box;
 }
 
-/* 공지사항 및 게시판 */
-.announcements,
-.board-posts {
+/* 공지사항*/
+.announcements {
   position: relative; /* sticky 요소가 부모 요소 내에서 고정되도록 설정 */
+  margin: 20px 0;
   width: 100%;
   background-color: #f9f9f9;
   padding: 20px;
@@ -333,8 +333,7 @@ table tbody tr:hover {
     padding: 15px;
   }
 
-  .announcements,
-  .board-posts {
+  .announcements{
     padding: 15px;
   }
 }

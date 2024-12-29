@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './MainPage.css';
+import './Calendar.css';
 import { useUser } from '../../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 import API_URLS from '../../api/apiURLS';
 import axiosInstance from '../../api/axiosInstance';
 import FormModalShow from '../../components/FormModalShow'; // 모달 컴포넌트 임포트
+import Calendar from 'react-calendar'; // react-calendar 임포트
 
 function MainPage() {
   const { user, logoutUser } = useUser();
   const [currentPage, setCurrentPage] = useState('Home');
   const [announcements, setAnnouncements] = useState([]);
-  const [boardPosts, setBoardPosts] = useState([]);
+  
   const [announcementPage, setAnnouncementPage] = useState(1);
-  const [boardPage, setBoardPage] = useState(1);
   const [announcementTotalPages, setAnnouncementTotalPages] = useState(1);
-  const [boardTotalPages, setBoardTotalPages] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedNotice, setSelectedNotice] = useState(null); // 선택된 공지사항 상태
   const navigate = useNavigate();
 
   // API 호출 함수
@@ -32,7 +34,7 @@ function MainPage() {
         setAnnouncements(response.data.results);
       }
   
-      setAnnouncementTotalPages(response.data.total_pages);
+      setAnnouncementTotalPages(response.data.total_count);
       
     } catch (error) {
       console.error('Failed to fetch announcements:', error);
@@ -41,44 +43,18 @@ function MainPage() {
     }
   };
 
-  const fetchBoardPosts = async (page) => {
-    try {
-      const response = await axiosInstance.get(API_URLS.NOTICE, {
-        params: { page }  // page를 params로 전달
-      });
-  
-      // 응답이 비었을 때 '내용 없음'을 넣어준다.
-      if (!response.data.results || response.data.results.length === 0) {
-        setBoardPosts([{ title: "내용 없음", description: "등록글이 없습니다." }]);
-      } else {
-        setBoardPosts(response.data.results);
-      }
-  
-      setBoardTotalPages(response.data.total_pages);
-      
-    } catch (error) {
-      console.error('Failed to fetch announcements:', error);
-      // 에러 발생 시에도 '내용 없음'을 넣어준다.
-      setBoardPosts([{ title: "내용 없음", description: "공지사항을 불러오는 데 실패했습니다." }]);
-    }
-  };
-  
-  // Pagination 버튼 생성
   const createPagination = (currentPage, totalPages, setPage) => (
     <div className="pagination">
-      <button disabled={currentPage === 1} onClick={() => setPage((prev) => prev - 1)}>
+      <button 
+        disabled={currentPage === 1} 
+        onClick={() => setPage((prev) => Math.max(prev - 1, 1))} // currentPage가 1보다 적으면 1로 설정
+      >
         &lt;
       </button>
-      {Array.from({ length: totalPages }, (_, i) => (
-        <button
-          key={i + 1}
-          className={currentPage === i + 1 ? 'active' : ''}
-          onClick={() => setPage(i + 1)}
-        >
-          {i + 1}
-        </button>
-      ))}
-      <button disabled={currentPage === totalPages} onClick={() => setPage((prev) => prev + 1)}>
+      <button 
+        disabled={currentPage === Math.ceil(totalPages / 5) || totalPages === 0} 
+        onClick={() => setPage((prev) => Math.min(prev + 1, Math.ceil(totalPages / 5)))}
+      >
         &gt;
       </button>
     </div>
@@ -87,9 +63,8 @@ function MainPage() {
   useEffect(() => {
     if (currentPage === 'Home') {
       fetchAnnouncements(announcementPage);
-      fetchBoardPosts(boardPage);
     }
-  }, [currentPage, announcementPage, boardPage]);
+  }, [currentPage, announcementPage]);
 
   // 로그아웃 함수
   const handleLogout = () => {
@@ -124,7 +99,21 @@ function MainPage() {
   // 새로고침 함수
   const refreshData = () => {
     fetchAnnouncements(announcementPage);
-    fetchBoardPosts(boardPage);
+  };
+
+  const openNoticeModal = (notice) => {
+    const fields = [
+      { label: '제목', value: notice.title },   // 공지사항 제목
+      { label: '내용', value: notice.content },  // 공지사항 내용
+    ];
+    setSelectedNotice(fields);  // fields 배열을 상태에 저장
+  };
+
+  // 날짜 선택 핸들러
+  const [date, setDate] = useState(new Date());
+
+  const onChange = (newDate) => {
+    setDate(newDate); // 달력에서 선택된 날짜 업데이트
   };
 
   return (
@@ -168,6 +157,7 @@ function MainPage() {
           <div className="home-sections">
             <div className="announcements">       
               <div className="header">
+              
                 <h2>공지사항</h2>
                 <button className="refresh-btn" onClick={refreshData}>
                   <img src="/images/refresh.svg" alt="refresh" />
@@ -190,11 +180,13 @@ function MainPage() {
                 <tbody>
                   {announcements.length > 0 ? (
                     announcements.map((item) => (
-                      <tr key={item.id}>
+                      <tr key={item.id} onClick={() => openNoticeModal(item)}>
                         <td>{item.id}</td>
                         <td>{item.title}</td>
-                        <td>{item.author}</td>
-                        <td>{new Date(item.date).toLocaleDateString('en-CA')}</td>
+                        <td>
+                          {item.author_email === "admin" ? "관리자" : item.author_email}
+                        </td>
+                        <td>{new Date(item.created_at).toLocaleDateString('en-CA')}</td>
                       </tr>
                     ))
                   ) : (
@@ -205,45 +197,17 @@ function MainPage() {
                 </tbody>
               </table> 
             </div>
-
-            <div className="board-posts">
-              <div className="header">
-                <h2>게시판</h2>
-                <button className="refresh-btn" onClick={refreshData}>
-                  <img src="/images/refresh.svg" alt="refresh" />
-                </button>
-                <div className="pagination-container">
-                  {createPagination(boardPage, boardTotalPages, setBoardPage)}
+            <div className="calendar-container">
+            <Calendar
+              onChange={onChange}
+              value={date}
+              showNeighboringMonth={false}  // 이전, 다음 달 날짜는 보이지 않게
+              view="month"  // 월 단위 보기
+              locale="ko-KR"  // 한국어 로케일로 설정
+              tileClassName="react-calendar__tile"  // 날짜 타일의 기본 클래스
+              calendarType="gregory" // 일요일부터 시작하도록 설정
+            />
                 </div>
-              </div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {boardPosts.length > 0 ? (
-                    boardPosts.map((post) => (
-                      <tr key={post.id}>
-                        <td>{post.id}</td>
-                        <td>{post.title}</td>
-                        <td>{post.author}</td>
-                        <td>{new Date(post.date).toLocaleDateString('en-CA')}</td>
-                      </tr>
-                    ))
-                  ) : (
-                  <tr className="no-content">
-                    <td colSpan="4">작성 내역 없음</td>
-                  </tr>
-                  )}
-                </tbody>
-              </table>             
-            </div>
           </div>
           )}
         </div>
@@ -253,6 +217,13 @@ function MainPage() {
           title="사원 정보"
           fields={fields}
           onClose={closeModal}
+        />
+      )}
+      {selectedNotice  && (
+        <FormModalShow
+        title="공지사항"
+        fields={selectedNotice}
+        onClose={() => setSelectedNotice(null)} // 모달 닫기
         />
       )}
     </div>

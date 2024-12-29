@@ -1,0 +1,2 @@
+1. 사진 같이 가져오기
+2. api access token 만료되었을때 refresh로 받아오기

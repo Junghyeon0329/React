@@ -113,15 +113,13 @@ nav ul li:hover {
 /* 공지사항 및 게시판 */
 .announcements,
 .board-posts {
-  width: 100%; /* 화면의 80% 차지 */
-  max-width: none; /* 최대 너비 제한 제거 */
+  position: relative; /* sticky 요소가 부모 요소 내에서 고정되도록 설정 */
+  width: 100%;
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box; /* 내부 여백을 포함하여 크기 조정 */
-  margin: 0 auto; /* 중앙 정렬 유지 */
-  min-height: 300px;
+  min-height: 354px;  /* 최소 높이로 공간을 확보 */
 }
 
 h2 {
@@ -194,12 +192,22 @@ table tbody tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Pagination 스타일 */
+.pagination-container {
+  position: sticky;
+  display: flex;
+  justify-content: right;
+  z-index: 10;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  width: 100%;
+}
+
+/* 페이지네이션 버튼 스타일 */
 .pagination {
   display: flex;
   justify-content: center;
   gap: 5px;
 }
+
 
 .pagination button {
   padding: 8px 12px;
@@ -276,13 +284,6 @@ table tbody tr:hover {
   transform: scale(1);
 }
 
-/* Pagination 컨테이너 */
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 15px;
-}
-
 .refresh-btn {
   font-size: 18px;
   cursor: pointer;
@@ -313,6 +314,7 @@ table tbody tr:hover {
   font-size: 24px;
   font-weight: bold;
   color: #34495e;
+  min-width: 100px;
 }
 
 .refresh-btn:hover {

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './MainPage.css';
 import { useUser } from '../../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API_URLS from '../../api/apiURLS';
+import axiosInstance from '../../api/axiosInstance';
 import FormModalShow from '../../components/FormModalShow'; // 모달 컴포넌트 임포트
 
 function MainPage() {
@@ -18,61 +19,70 @@ function MainPage() {
   const navigate = useNavigate();
 
   // API 호출 함수
-  // const fetchAnnouncements = async (page) => {
-  //   try {
-  //     const response = await axios.get(`/api/announcements?page=${page}`);
-  //     setAnnouncements(response.data.results);
-  //     setAnnouncementTotalPages(response.data.total_pages);
-  //   } catch (error) {
-  //     console.error('Failed to fetch announcements:', error);
-  //   }
-  // };
   const fetchAnnouncements = async (page) => {
     try {
-      // 테스트용 더미 데이터 생성 (공지사항 10개)
-      const dummyAnnouncements = Array.from({ length: 10 }, (_, index) => ({
-        id: index + 1,
-        title: `공지사항 ${index + 1}`,
-        date: new Date().toISOString(),
-      }));
+      const response = await axiosInstance.get(API_URLS.NOTICE, {
+        params: { page }  // page를 params로 전달
+      });
+  
+      // 응답이 비었을 때 '내용 없음'을 넣어준다.
+      if (!response.data.results || response.data.results.length === 0) {
+        setAnnouncements([{ title: "내용 없음", description: "공지사항이 없습니다." }]);
+      } else {
+        setAnnouncements(response.data.results);
+      }
+  
+      setAnnouncementTotalPages(response.data.total_pages);
       
-      // 페이지 나누기 구현 (현재 페이지에 해당하는 항목만 반환)
-      const results = dummyAnnouncements.slice((page - 1) * 5, page * 5); // 한 페이지당 5개 항목
-      setAnnouncements(results);
-      setAnnouncementTotalPages(Math.ceil(dummyAnnouncements.length / 5)); // 총 페이지 수 계산
     } catch (error) {
       console.error('Failed to fetch announcements:', error);
+      // 에러 발생 시에도 '내용 없음'을 넣어준다.
+      setAnnouncements([{ title: "내용 없음", description: "공지사항을 불러오는 데 실패했습니다." }]);
     }
   };
 
   const fetchBoardPosts = async (page) => {
     try {
-      const response = await axios.get(`/api/board-posts?page=${page}`);
-      setBoardPosts(response.data.results);
+      const response = await axiosInstance.get(API_URLS.NOTICE, {
+        params: { page }  // page를 params로 전달
+      });
+  
+      // 응답이 비었을 때 '내용 없음'을 넣어준다.
+      if (!response.data.results || response.data.results.length === 0) {
+        setBoardPosts([{ title: "내용 없음", description: "등록글이 없습니다." }]);
+      } else {
+        setBoardPosts(response.data.results);
+      }
+  
       setBoardTotalPages(response.data.total_pages);
+      
     } catch (error) {
-      console.error('Failed to fetch board posts:', error);
+      console.error('Failed to fetch announcements:', error);
+      // 에러 발생 시에도 '내용 없음'을 넣어준다.
+      setBoardPosts([{ title: "내용 없음", description: "공지사항을 불러오는 데 실패했습니다." }]);
     }
   };
-
-  // const fetchBoardPosts = async (page) => {
-  //   try {
-  //     // 테스트용 더미 데이터 생성 (공지사항 10개)
-  //     const dummyAnnouncements = Array.from({ length: 10 }, (_, index) => ({
-  //       id: index + 1,
-  //       title: `게시판 ${index + 1}`,
-  //       date: new Date().toISOString(),
-  //     }));
-      
-  //     // 페이지 나누기 구현 (현재 페이지에 해당하는 항목만 반환)
-  //     const results = dummyAnnouncements.slice((page - 1) * 5, page * 5); // 한 페이지당 5개 항목
-  //     setBoardPosts(results);
-  //     setBoardTotalPages(Math.ceil(dummyAnnouncements.length / 5)); // 총 페이지 수 계산
-  //   } catch (error) {
-  //     console.error('Failed to fetch announcements:', error);
-  //   }
-  // };
-
+  
+  // Pagination 버튼 생성
+  const createPagination = (currentPage, totalPages, setPage) => (
+    <div className="pagination">
+      <button disabled={currentPage === 1} onClick={() => setPage((prev) => prev - 1)}>
+        &lt;
+      </button>
+      {Array.from({ length: totalPages }, (_, i) => (
+        <button
+          key={i + 1}
+          className={currentPage === i + 1 ? 'active' : ''}
+          onClick={() => setPage(i + 1)}
+        >
+          {i + 1}
+        </button>
+      ))}
+      <button disabled={currentPage === totalPages} onClick={() => setPage((prev) => prev + 1)}>
+        &gt;
+      </button>
+    </div>
+  );
 
   useEffect(() => {
     if (currentPage === 'Home') {
@@ -110,27 +120,6 @@ function MainPage() {
     { id: '이메일', label: '이메일', type: 'email', value: user?.email || 'N/A' },
     { id: '등록일', label: '등록일', type: 'text', value: formatDate(user?.joinedDate) }, // 날짜 포맷팅 적용
   ];
-
-  // Pagination 버튼 생성
-  const createPagination = (currentPage, totalPages, setPage) => (
-    <div className="pagination">
-      <button disabled={currentPage === 1} onClick={() => setPage((prev) => prev - 1)}>
-        &lt;
-      </button>
-      {Array.from({ length: totalPages }, (_, i) => (
-        <button
-          key={i + 1}
-          className={currentPage === i + 1 ? 'active' : ''}
-          onClick={() => setPage(i + 1)}
-        >
-          {i + 1}
-        </button>
-      ))}
-      <button disabled={currentPage === totalPages} onClick={() => setPage((prev) => prev + 1)}>
-        &gt;
-      </button>
-    </div>
-  );
 
   // 새로고침 함수
   const refreshData = () => {
@@ -177,22 +166,25 @@ function MainPage() {
       <div className="content">
         {currentPage === 'Home' && (
           <div className="home-sections">
-
-            <div className="header">
-              <h2>공지사항</h2>
-              <button className="refresh-btn" onClick={refreshData}>
-              <img src="/images/refresh.svg" alt="refresh" />
-              </button>
-            </div>
-
-            <div className="announcements">              
+            <div className="announcements">       
+              <div className="header">
+                <h2>공지사항</h2>
+                <button className="refresh-btn" onClick={refreshData}>
+                  <img src="/images/refresh.svg" alt="refresh" />
+                </button>
+                <div className="pagination-container">
+                  {createPagination(announcementPage, announcementTotalPages, setAnnouncementPage)}
+                </div>
+              </div>       
             
               <table>
                 <thead>
                   <tr>
                     <th>번호</th>
                     <th>제목</th>
+                    <th>작성자</th>
                     <th>작성일</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -201,6 +193,7 @@ function MainPage() {
                       <tr key={item.id}>
                         <td>{item.id}</td>
                         <td>{item.title}</td>
+                        <td>{item.author}</td>
                         <td>{new Date(item.date).toLocaleDateString('en-CA')}</td>
                       </tr>
                     ))
@@ -210,20 +203,19 @@ function MainPage() {
                     </tr>
                   )}
                 </tbody>
-              </table>
-              <div className="pagination-container top">
-                {createPagination(announcementPage, announcementTotalPages, setAnnouncementPage)}
-              </div>
+              </table> 
             </div>
 
-            <div className="header">
-              <h2>게시판</h2>
-              <button className="refresh-btn" onClick={refreshData}>
-              <img src="/images/refresh.svg" alt="refresh" />
-              </button>
-            </div>
             <div className="board-posts">
-            
+              <div className="header">
+                <h2>게시판</h2>
+                <button className="refresh-btn" onClick={refreshData}>
+                  <img src="/images/refresh.svg" alt="refresh" />
+                </button>
+                <div className="pagination-container">
+                  {createPagination(boardPage, boardTotalPages, setBoardPage)}
+                </div>
+              </div>
               <table>
                 <thead>
                   <tr>
@@ -250,12 +242,7 @@ function MainPage() {
                   </tr>
                   )}
                 </tbody>
-
-
-              </table>
-              <div className="pagination-container top">
-                {createPagination(boardPage, boardTotalPages, setBoardPage)}
-              </div>
+              </table>             
             </div>
           </div>
           )}

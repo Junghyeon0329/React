@@ -155,6 +155,18 @@ function MainPage() {
       <div className="content">
         {currentPage === 'Home' && (
           <div className="home-sections">
+            <div className="calendar-container">
+              <Calendar
+                onChange={onChange}
+                value={date}
+                showNeighboringMonth={false}
+                view="month"  // 월 단위 보기
+                locale="ko-KR"  // 한국어 로케일로 설정
+                tileClassName="react-calendar__tile"  // 날짜 타일의 기본 클래스
+                calendarType="gregory" // 일요일부터 시작하도록 설정
+              />
+            </div>
+
             <div className="announcements">       
               <div className="header">
               
@@ -197,17 +209,7 @@ function MainPage() {
                 </tbody>
               </table> 
             </div>
-            <div className="calendar-container">
-            <Calendar
-              onChange={onChange}
-              value={date}
-              showNeighboringMonth={false}  // 이전, 다음 달 날짜는 보이지 않게
-              view="month"  // 월 단위 보기
-              locale="ko-KR"  // 한국어 로케일로 설정
-              tileClassName="react-calendar__tile"  // 날짜 타일의 기본 클래스
-              calendarType="gregory" // 일요일부터 시작하도록 설정
-            />
-                </div>
+          
           </div>
           )}
         </div>

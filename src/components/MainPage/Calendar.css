@@ -1,85 +1,102 @@
-/* .calendar-container - 달력의 외부 컨테이너 */
 .calendar-container {
-  margin-top: 20px;
+  margin-top: 0px;
   width: 100%;
-  max-width: 100%; /* 최대 크기 제한 */
+  max-width: 100%;
+  min-height: 250px;
+  max-height: 260px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  background-color: #f9f9f9;  /* 주변 배경과 잘 어울리도록 밝은 색 */
-  padding: 20px;  /* 주변 여백 추가 */
-  border-radius: 15px; /* 테두리 둥글게 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 효과 */
+  background-color: #f9f9f9; 
+  padding: 20px;  
+  border-radius: 15px; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  box-sizing: border-box;
 }
 
-/* react-calendar - 기본 달력 스타일 */
+/* .react-calendar - 반응형 설정 */
 .react-calendar {
-  width: 100%; /* 달력의 너비를 100%로 설정 */
-  background-color: #ffffff; /* 배경을 하얀색으로 */
-  border-radius: 10px;  /* 둥근 모서리 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);  /* 부드러운 그림자 */
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  height: auto;  /* 자동으로 크기 조정 */
 }
 
-/* .react-calendar__tile - 각 날짜 셀 */
-.react-calendar__tile {
-  all: unset;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;  /* 글자 크기 */
-  color: #333;  /* 기본 글자색 */
-  height: 50px;  /* 날짜 셀 높이 */
-  width: 100%;  /* 셀 너비를 100%로 설정 */
-  border-radius: 50%;  /* 둥근 날짜 셀 */
-  transition: background-color 0.2s ease;  /* 부드러운 색 변화 */
-}
-
-.react-calendar__tile:enabled:hover {
-  background-color: #e2f1e6;  /* 마우스 오버 시 부드러운 배경 색상 */
-  cursor: pointer;  /* 커서가 손 모양으로 변함 */
-}
-
-.react-calendar__tile--active {
-  background-color: #3f8e5e;  /* 클릭한 날짜의 배경색 */
-  color: white;  /* 클릭한 날짜의 글자색 */
-}
-
-/* react-calendar__month-view - 1주일에 7일씩 정확하게 나누는 설정 */
-.react-calendar__month-view {
-  display: grid;
-  /* grid-template-columns: repeat(1, 1fr); */
-  /* gap: 5px; */
-}
-
-.react-calendar__month-view__weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7개의 열로 요일을 균등하게 배치 */
-  margin-bottom: 10px;  /* 요일과 날짜 셀 사이 간격 */
-}
-
-/* 날짜 셀 사이 간격을 명확히 설정 */
-.react-calendar__tile {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* .react-calendar__navigation button - 이전/다음 버튼 */
+/* 2024년 12월 표기 */
 .react-calendar__navigation button {
-  all: unset;  /* 기본 버튼 스타일 제거 */
+  all: unset; 
   background: none;
-  font-size: 18px;
+  font-size: 11px;
+  max-width: 60px; 
   font-weight: bold;
   color: black;
   cursor: pointer;
   padding: 10px;
-  border-radius: 5px;  /* 둥근 모서리 */
-  transition: background-color 0.2s ease;  /* 부드러운 배경 색상 변화 */
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  justify-content: center;  /* 수평 중앙 정렬 */
+  align-items: center;  /* 수직 중앙 정렬 */
 }
 
 .react-calendar__navigation button:hover {
   background-color: #f0f0f0;
   color: #2d6a4f;  /* 호버 시 색상 */
+}
+
+/* 월화수목금 표기 */
+.react-calendar__month-view__weekdays__weekday {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  height: 30px;  /* 요일 셀 높이 */
+  background-color: #f0f0f0;  /* 요일 셀 배경 색상 */
+  border-radius: 5px;
+  color: #333;  /* 요일 글자 색상 */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}
+
+/* 일요일을 빨간색으로 */
+.react-calendar__month-view__weekdays__weekday:nth-child(1) {
+  color: red;  /* 일요일 텍스트 색상 */
+}
+
+/* 토요일을 파란색으로 */
+.react-calendar__month-view__weekdays__weekday:nth-child(7) {
+  color: blue;  /* 토요일 텍스트 색상 */
+}
+
+/* 1일, 2일 3일과 관련된 부분 */
+.react-calendar__tile {
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;  
+  color: #333;  
+  height: 30px;  
+  width: 100%;  
+  border-radius: 50%;  
+  transition: background-color 0.2s ease; 
+}
+
+.react-calendar__tile:enabled:hover {
+  background-color: #e2f1e6;
+  cursor: pointer;
+}
+
+.react-calendar__tile--active {
+  background-color: #3f8e5e; 
+  color: white;  
 }
 
 /* 오늘 날짜 표시 */
@@ -89,43 +106,50 @@
   border-radius: 50%;  /* 둥근 테두리 */
 }
 
-/* 달력 헤더 (월, 연도 표시 부분) */
-.react-calendar__month-view__days {
-  font-size: 16px;  /* 요일 글씨 크기 */
-  font-weight: bold;  /* 요일 굵게 */
-  color: #333;
-}
-
-/* .react-calendar__month-view__weekdays - 요일 헤더 스타일 */
-.react-calendar__month-view__weekdays {
-  font-size: 16px;
-  font-weight: bold;
-  color: #3f8e5e;  /* 요일 글자색 */
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);  /* 요일도 7개 열로 균등하게 배치 */
-  /* gap: 5px; */
-}
-
-/* 각 날짜 셀 */
-.react-calendar__month-view__weekdays__weekday {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 30px;  /* 요일 셀 높이 */
-  background-color: #f0f0f0;  /* 요일 셀 배경 색상 */
-  border-radius: 5px;
-  color: #333;  /* 요일 글자 색상 */
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* 반응형 디자인: 화면이 좁아지면 달력 크기를 적절히 줄임 */
-@media (max-width: 768px) {
+/* 반응형 디자인: 화면이 좁아질 때 달력 크기와 레이아웃 조정 */
+@media (max-width: 1024px) {
   .calendar-container {
     width: 90%;  /* 화면 크기가 작아지면 달력 크기를 90%로 설정 */
+    padding: 15px;  /* 패딩을 줄여서 화면에 맞게 조정 */
   }
 
   .react-calendar {
     max-width: 100%;  /* 달력의 최대 너비를 100%로 */
+  }
+
+  /* 날짜 셀의 글씨 크기 조정 */
+  .react-calendar__tile {
+    font-size: 14px;
+    height: 35px;  /* 셀 높이 줄이기 */
+  }
+
+  .react-calendar__month-view__weekdays__weekday {
+    font-size: 12px;  /* 요일 글씨 크기 줄이기 */
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-container {
+    width: 100%;  /* 화면 크기가 매우 작아지면 100%로 설정 */
+    padding: 10px;  /* 패딩을 줄여서 더 작은 화면에 맞게 조정 */
+  }
+
+  .react-calendar {
+    max-width: 100%;  /* 달력의 최대 너비를 100%로 */
+  }
+
+  .react-calendar__tile {
+    font-size: 12px;  /* 글자 크기 더 줄이기 */
+    height: 30px;  /* 셀 높이 줄이기 */
+  }
+
+  .react-calendar__month-view__weekdays__weekday {
+    font-size: 12px;  /* 요일 글씨 크기 줄이기 */
+  }
+
+  /* 반응형 디자인: 버튼 크기 조정 */
+  .react-calendar__navigation button {
+    font-size: 16px;  /* 버튼의 글자 크기 줄이기 */
+    padding: 8px;  /* 버튼 크기 줄이기 */
   }
 }

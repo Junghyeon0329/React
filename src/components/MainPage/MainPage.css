@@ -43,6 +43,7 @@
 .user-info {
   font-size: 2em;
   color: #dcdde1;
+  margin-bottom: 10px;
 }
 
 /* 네비게이션 */
@@ -54,14 +55,15 @@ nav ul {
 }
 
 nav ul li {
-  padding: 15px;
-  margin: 10px 0;
+  padding: 5px;
+  margin: 10px 0;  
   width: 200px;
   text-align: center;
   background: rgba(255, 255, 255, 0.1);
   cursor: pointer;
   border-radius: 8px;
   transition: background-color 0.3s, transform 0.2s;
+  
 }
 
 nav ul li button {
@@ -70,7 +72,7 @@ nav ul li button {
   background: none;
   border: none;
   outline: none;
-  font-size: 1.1em;
+  font-size: 1.5em;
   text-align: center;
   color: white;
   cursor: pointer;
@@ -119,7 +121,8 @@ nav ul li:hover {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  min-height: 354px;  /* 최소 높이로 공간을 확보 */
+  height: 10%;
+  min-height: 320px; 
 }
 
 h2 {
@@ -242,6 +245,8 @@ table tbody tr:hover {
   justify-content: space-between;
   width: 100%;
   gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 0px;
 }
 
 .user-info-btn,

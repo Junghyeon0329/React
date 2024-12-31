@@ -7,6 +7,8 @@ import API_URLS from '../../api/apiURLS';
 import axiosInstance from '../../api/axiosInstance';
 import FormModalShow from '../../components/FormModalShow'; // 모달 컴포넌트 임포트
 import Calendar from 'react-calendar'; // react-calendar 임포트
+import moment from 'moment';
+
 
 function MainPage() {
   const { user, logoutUser } = useUser();
@@ -116,9 +118,17 @@ function MainPage() {
     setDate(newDate); // 달력에서 선택된 날짜 업데이트
   };
 
+ 
   return (
     <div className="main-container">
       <div className="sidebar">
+      <nav>
+          <ul>
+            <li>
+              <button onClick={() => setCurrentPage('Home')}>One-Que</button>
+            </li>
+          </ul>
+        </nav>
         <div className="user-card">
           <img
             src={user?.avatar || '/images/person.svg'}
@@ -137,35 +147,25 @@ function MainPage() {
             </div>
           )}
         </div>
-        <nav>
-          <ul>
-            <li>
-              <button onClick={() => setCurrentPage('Home')}>Home</button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage('Board')}>Board</button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage('Contact')}>Contact</button>
-            </li>
-          </ul>
-        </nav>
+        
+        <div className="calendar-container">
+          <Calendar
+            onChange={onChange}
+            value={date}
+            formatDay={(local, date) => moment(date).format("D")}
+            showNeighboringMonth={false}
+            view="month"
+            locale="ko-KR"
+            tileClassName="react-calendar__tile"
+            calendarType="gregory"
+          /> 
+        </div>
       </div>
 
       <div className="content">
         {currentPage === 'Home' && (
           <div className="home-sections">
-            <div className="calendar-container">
-              <Calendar
-                onChange={onChange}
-                value={date}
-                showNeighboringMonth={false}
-                view="month"  // 월 단위 보기
-                locale="ko-KR"  // 한국어 로케일로 설정
-                tileClassName="react-calendar__tile"  // 날짜 타일의 기본 클래스
-                calendarType="gregory" // 일요일부터 시작하도록 설정
-              />
-            </div>
+            
 
             <div className="announcements">       
               <div className="header">

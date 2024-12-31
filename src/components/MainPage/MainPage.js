@@ -5,10 +5,10 @@ import { useUser } from '../../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 import API_URLS from '../../api/apiURLS';
 import axiosInstance from '../../api/axiosInstance';
-import FormModalShow from '../../components/FormModalShow'; // 모달 컴포넌트 임포트
-import Calendar from 'react-calendar'; // react-calendar 임포트
+import FormModalShow from '../../components/FormModalShow'; 
+import FormModal from '../../components/FormModal'; 
+import Calendar from 'react-calendar'; 
 import moment from 'moment';
-
 
 function MainPage() {
   const { user, logoutUser } = useUser();
@@ -17,19 +17,22 @@ function MainPage() {
   
   const [announcementPage, setAnnouncementPage] = useState(1);
   const [announcementTotalPages, setAnnouncementTotalPages] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [selectedNotice, setSelectedNotice] = useState(null); // 선택된 공지사항 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedNotice, setSelectedNotice] = useState(false); 
+  const [isCreateMode, setIsCreateMode] = useState(false);
+
+  const [NoticeTitle, setAnnouncementTitle] = useState('');
+  const [NoticeContent, setAnnouncementContent] = useState('');
+
   const navigate = useNavigate();
 
-  // API 호출 함수
   const fetchAnnouncements = async (page) => {
     try {
       const response = await axiosInstance.get(API_URLS.NOTICE, {
-        params: { page }  // page를 params로 전달
+        params: { page } 
       });
-  
-      // 응답이 비었을 때 '내용 없음'을 넣어준다.
+
       if (!response.data.results || response.data.results.length === 0) {
         setAnnouncements([{ title: "내용 없음", description: "공지사항이 없습니다." }]);
       } else {
@@ -40,7 +43,6 @@ function MainPage() {
       
     } catch (error) {
       console.error('Failed to fetch announcements:', error);
-      // 에러 발생 시에도 '내용 없음'을 넣어준다.
       setAnnouncements([{ title: "내용 없음", description: "공지사항을 불러오는 데 실패했습니다." }]);
     }
   };
@@ -49,7 +51,7 @@ function MainPage() {
     <div className="pagination">
       <button 
         disabled={currentPage === 1} 
-        onClick={() => setPage((prev) => Math.max(prev - 1, 1))} // currentPage가 1보다 적으면 1로 설정
+        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
       >
         &lt;
       </button>
@@ -79,11 +81,6 @@ function MainPage() {
     setIsModalOpen(true);
   };
 
-  // 유저 정보 모달 닫기
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   // joinedDate 포맷팅 함수
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A'; // 날짜가 없으면 'N/A' 반환
@@ -111,6 +108,31 @@ function MainPage() {
     setSelectedNotice(fields);  // fields 배열을 상태에 저장
   };
 
+  // 공지사항 작성 모드 시작
+  const openCreateModal = () => {
+    const fields = [
+      { label: '제목', value: ''},
+      { label: '내용', value: ''},
+    ];
+    setIsCreateMode(fields);  // fields 배열을 상태에 저장
+  };
+
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    if (NoticeTitle === '' || NoticeContent === '') {
+      alert('공지사항 제목과 내용을 모두 입력해주세요.');
+      return;
+    }
+
+    try {
+      await axiosInstance.post(API_URLS.NOTICE, { title: NoticeTitle, content: NoticeContent });
+      alert('공지사항 작성 성공!');
+      setIsCreateMode(false);
+    } catch (error) {
+      alert('공지사항 작성 실패');
+    }
+  };
+
   // 날짜 선택 핸들러
   const [date, setDate] = useState(new Date());
 
@@ -118,7 +140,6 @@ function MainPage() {
     setDate(newDate); // 달력에서 선택된 날짜 업데이트
   };
 
- 
   return (
     <div className="main-container">
       <div className="sidebar">
@@ -138,12 +159,8 @@ function MainPage() {
           <p className="user-info">{user?.email || 'GUEST'}</p>
           {user && (
             <div className="button-container">
-              <button className="user-info-btn" onClick={openModal}>
-                사원 정보
-              </button>
-              <button className="logout-btn" onClick={handleLogout}>
-                로그 아웃
-              </button>
+              <button className="user-info-btn" onClick={openModal}> 사원 정보 </button>
+              <button className="logout-btn" onClick={handleLogout}> 로그 아웃 </button>
             </div>
           )}
         </div>
@@ -166,7 +183,6 @@ function MainPage() {
         {currentPage === 'Home' && (
           <div className="home-sections">
             
-
             <div className="announcements">       
               <div className="header">
               
@@ -191,9 +207,9 @@ function MainPage() {
                 </thead>
                 <tbody>
                   {announcements.length > 0 ? (
-                    announcements.map((item) => (
+                    announcements.map((item, index) => (
                       <tr key={item.id} onClick={() => openNoticeModal(item)}>
-                        <td>{item.id}</td>
+                        <td>{(announcementPage - 1) * 5 + index + 1}</td>
                         <td>{item.title}</td>
                         <td>
                           {item.author_email === "admin" ? "관리자" : item.author_email}
@@ -208,7 +224,18 @@ function MainPage() {
                   )}
                 </tbody>
               </table> 
+              {user?.staff && (
+                <button className="create-btn" onClick={() => {
+                  setAnnouncementTitle('')
+                  setAnnouncementContent('')
+                  openCreateModal();
+                }}>
+                  <img src="/images/writing.svg" alt="writing" />
+                  내용 쓰기
+                </button>
+              )}
             </div>
+            
           
           </div>
           )}
@@ -218,14 +245,41 @@ function MainPage() {
         <FormModalShow
           title="사원 정보"
           fields={fields}
-          onClose={closeModal}
+          onClose={() => setIsModalOpen(false)}
         />
       )}
       {selectedNotice  && (
         <FormModalShow
         title="공지사항"
         fields={selectedNotice}
-        onClose={() => setSelectedNotice(null)} // 모달 닫기
+        onClose={() => setSelectedNotice(false)} // 모달 닫기
+        />
+      )}
+            
+      {isCreateMode && (
+        <FormModal
+          title="공지사항 작성"
+          fields={[
+            {
+              id: 'NoticeTitle',
+              label: '공지사항 제목',
+              type: 'title',
+              value: NoticeTitle,
+              placeholder: '공지사항 제목을 입력하세요',
+              onChange: (e) => setAnnouncementTitle(e.target.value)
+            },
+            {
+              id: 'NoticeContent',
+              label: '공지사항 내용',
+              type: 'Content',
+              value: NoticeContent,
+              placeholder: '공지사항 내용을 입력하세요',
+              onChange: (e) => setAnnouncementContent(e.target.value)
+            }
+          ]}
+          onSubmit={handleSignUpSubmit}
+          onClose={() => setIsCreateMode(false)}
+
         />
       )}
     </div>

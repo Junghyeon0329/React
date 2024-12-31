@@ -185,11 +185,19 @@ function MainPage() {
             
             <div className="announcements">       
               <div className="header">
-              
                 <h2>공지사항</h2>
                 <button className="refresh-btn" onClick={refreshData}>
                   <img src="/images/refresh.svg" alt="refresh" />
                 </button>
+                {user?.staff && (
+                  <button className="create-btn" onClick={() => {
+                    setAnnouncementTitle('')
+                    setAnnouncementContent('')
+                    openCreateModal();
+                  }}>
+                    <img src="/images/writing.svg" alt="writing" />
+                  </button>
+                )}
                 <div className="pagination-container">
                   {createPagination(announcementPage, announcementTotalPages, setAnnouncementPage)}
                 </div>
@@ -207,36 +215,34 @@ function MainPage() {
                 </thead>
                 <tbody>
                   {announcements.length > 0 ? (
-                    announcements.map((item, index) => (
-                      <tr key={item.id} onClick={() => openNoticeModal(item)}>
-                        <td>{(announcementPage - 1) * 5 + index + 1}</td>
-                        <td>{item.title}</td>
-                        <td>
-                          {item.author_email === "admin" ? "관리자" : item.author_email}
-                        </td>
-                        <td>{new Date(item.created_at).toLocaleDateString('en-CA')}</td>
-                      </tr>
-                    ))
+                    // 작성일 기준 내림차순 정렬
+                    announcements
+                      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // created_at 기준으로 내림차순 정렬
+                      .map((item, index) => (
+                        <tr key={item.id} onClick={() => openNoticeModal(item)}>
+                          <td>{(announcementPage - 1) * 5 + index + 1}</td> {/* 번호 부여 */}
+                          <td>{item.title}</td>
+                          <td>
+                            {item.author_email === "admin" ? "관리자" : item.author_email}
+                          </td>
+                          <td>{new Date(item.created_at).toLocaleDateString('en-CA')}</td>
+                        </tr>
+                      ))
                   ) : (
                     <tr className="no-content">
-                      <td colSpan="3">작성 내역 없음</td>
+                      <td colSpan="4">작성 내역 없음</td> {/* colspan 수정 */}
                     </tr>
                   )}
                 </tbody>
               </table> 
-              {user?.staff && (
-                <button className="create-btn" onClick={() => {
-                  setAnnouncementTitle('')
-                  setAnnouncementContent('')
-                  openCreateModal();
-                }}>
-                  <img src="/images/writing.svg" alt="writing" />
-                  내용 쓰기
-                </button>
-              )}
+              
             </div>
             
-          
+            <div className='web-contain'> 
+              <div className="header">
+                <h2>웹 컨테이너</h2>
+              </div>
+            </div>
           </div>
           )}
         </div>

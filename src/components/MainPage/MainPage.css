@@ -312,7 +312,7 @@ table tbody tr:hover {
   padding: 0;
   width: 30px;
   height: 30px;
-  margin-left: 10px;
+  margin-left: 5px;
   background-color: transparent; /* 배경색을 투명으로 설정 */
   border: none; /* 기본 버튼 테두리 제거 */
 }

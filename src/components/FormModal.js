@@ -1,10 +1,10 @@
 import React from 'react';
 
-const FormModal = ({ title, fields, onSubmit, onClose }) => {
+const FormModal = ({ title, fields, onSubmit, onClose, error }) => {
   return (
     <div className="modal">
       <div className="modal-content">
-        {/* X 버튼 추가 */}
+        {/* X 버튼 */}
         <button className="close-button" onClick={onClose}>
           &times; {/* &times;는 'X' 문자 */}
         </button>
@@ -20,10 +20,23 @@ const FormModal = ({ title, fields, onSubmit, onClose }) => {
                 value={field.value}
                 onChange={field.onChange}
                 placeholder={field.placeholder}
-                className="input-field" // 동일한 클래스 적용
+                className="input-field"
               />
             </div>
           ))}
+
+          {/* 오류 메시지 영역 */}
+          <p
+            style={{
+              color: 'red',
+              minHeight: '20px',
+              marginTop: '10px',
+              visibility: error ? 'visible' : 'hidden',
+            }}
+          >
+            {error}
+          </p>
+
           <button type="submit" className="submit-button">제출</button>
         </form>
       </div>
@@ -32,4 +45,3 @@ const FormModal = ({ title, fields, onSubmit, onClose }) => {
 };
 
 export default FormModal;
-

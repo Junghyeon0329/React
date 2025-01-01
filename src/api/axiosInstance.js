@@ -23,7 +23,6 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
 // 응답 인터셉터
 axiosInstance.interceptors.response.use(
   (response) => {

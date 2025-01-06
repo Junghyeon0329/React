@@ -23,7 +23,7 @@ function MainPage() {
     return (
         <div className="Page-Container">
             <header className="Header">
-                <h1>My Application</h1>
+                <h1>One-Que</h1>
             </header>
             <div className="grid-container">
                 <Login />

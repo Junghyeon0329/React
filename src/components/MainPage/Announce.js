@@ -72,7 +72,7 @@ function Announce() {
     return (
         <div className="grid-item Announce">     
             <div className="Notice-title">
-                <h2>공지사항</h2>
+                <h1>공지사항</h1>
                 <button className="refresh-btn" onClick={refreshData}>
                     <img src="/images/refresh.svg" alt="refresh" />
                 </button>

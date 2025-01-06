@@ -52,37 +52,56 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    border-radius: 10px; /* 테이블 모서리를 둥글게 */
+    overflow: hidden; /* 테이블 경계 바깥으로 나가지 않도록 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 테이블 그림자 */
   }
-  
+
   table th,
   table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+      padding: 15px;
+      text-align: left;
+      border-bottom: 2px solid #ddd; /* 행과 행 사이에 두꺼운 구분선 */
   }
-  
-  /* 각 열에 고정 너비 지정 */
+
+  table th {
+      background-color: #f4f6f9; /* 헤더의 배경색 */
+      font-weight: bold;
+      color: #34495e;
+      text-transform: uppercase; /* 제목을 대문자로 */
+      font-size: 16px; /* 제목의 폰트 크기 */
+  }
+
+  table td {
+      background-color: #ffffff; /* 셀 배경색 */
+      color: #2c3e50; /* 셀 텍스트 색 */
+  }
+
+  table tr:hover {
+      background-color: #f9fafb; /* 행을 호버할 때 배경색 변경 */
+  }
+
   table th:nth-child(1),
-  table td:nth-child(1) { /* 번호 열 */
-    width: 10%;
+  table td:nth-child(1) {
+      width: 10%;
+      text-align: center; /* 번호 열 중앙 정렬 */
   }
-  
+
   table th:nth-child(2),
-  table td:nth-child(2) { /* 제목 열 */
-    width: 30%; 
-    word-wrap: break-word; /* 긴 제목이 줄 바꿈 되도록 설정 */
+  table td:nth-child(2) {
+      width: 30%;
   }
-  
+
   table th:nth-child(3),
-  table td:nth-child(3) { /* 작성자 열 */
-    width: 20%;
-    text-align: center;
+  table td:nth-child(3) {
+      width: 20%;
+      text-align: center;
   }
-  
+
   table th:nth-child(4),
-  table td:nth-child(4) { /* 작성일 열 */
-    width: 20%;
-    text-align: center;
+  table td:nth-child(4) {
+      width: 20%;
+      text-align: center;
   }
 
   .Notice-title {
@@ -93,8 +112,13 @@
     overflow: hidden;    /* 텍스트가 넘칠 경우 숨기기 (선택 사항) */
     text-overflow: ellipsis; /* 텍스트가 넘치면 '...' 표시 (선택 사항) */
   }
-  .Notice-title h2{
-    font-size: 32px;
+  
+  .Notice-title h1 {
+    font-size: 32px; 
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #2c3e50;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   }
 
   .pagination-container {

@@ -64,14 +64,10 @@ function Login() {
                         className="input-field"
                     />
                 </div>
-                <p
-                    style={{
-                        color: 'red',
-                        minHeight: '20px',
-                        visibility: state.error ? 'visible' : 'hidden',
-                        marginTop: '10px',
-                    }}
-                >{state.error}</p>
+
+                <p className={`error-message ${state.error ? 'visible' : ''}`}>
+                    {state.error}
+                </p>
 
                 <button type="submit" className="submit-button"> 제출하기 </button>
             </form>

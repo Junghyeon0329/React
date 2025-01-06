@@ -4,12 +4,13 @@
     height: 100vh;
     width: 100%;
     grid-template-rows: auto 1fr auto;
-    grid-template-columns: 1fr;  /* 컬럼 설정 */
+    grid-template-columns: 1fr;
     grid-template-areas: 
         "header"
         "content"
         "footer";
     box-sizing: border-box;
+    position: relative;
 }
 
 /* 헤더 */
@@ -22,17 +23,17 @@
     margin-bottom: 25px;
     margin-left: 3.5%;
     margin-right: 3.5%;
-    padding: 0px;  /* padding을 추가하여 확인 */
+    padding: 0px; 
 }
 
 .Header h1 {
-    font-size: 3.5rem; /* h1에 대한 스타일 */
+    font-size: 3.5rem; 
 }
 
 /* 그리드 컨테이너 설정 */
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;  /* 공지사항과 로그인 창의 비율로 설정 */
+    grid-template-columns: 1fr 1fr 1fr; 
     grid-template-rows: repeat(2, 1fr);    
     gap: 10px;                           
     height: 100%;                         
@@ -48,11 +49,21 @@
     text-align: center;
     border: 1px solid #ccc;
     display: flex;
-    /* justify-content: center; */
     align-items: center;
     border-radius: 5px;
     font-size: 14px;
     flex-direction: column;
+}
+
+.Announce {
+    grid-column: 1 / 3;
+    grid-row: 1 / 2;
+    min-height: 400px;
+    max-height: 410px; 
+    margin-left: 5%;
+    border: 2px solid #ccc; /* 두께 2px, 색상은 연한 회색 */
+    border-radius: 8px; /* 둥근 테두리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */    
 }
 
 .login {    
@@ -63,22 +74,9 @@
     min-height: 400px;
     max-height: 410px;
     margin-right: 20px;
-
     border: 2px solid #ccc; /* 두께 2px, 색상은 연한 회색 */
     border-radius: 8px; /* 둥근 테두리 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-}
-
-.Announce {
-    grid-column: 1 / 3;
-    grid-row: 1 / 2;
-    min-height: 400px;
-    max-height: 410px; 
-    margin-left: 5%;
-
-    border: 2px solid #ccc; /* 두께 2px, 색상은 연한 회색 */
-    border-radius: 8px; /* 둥근 테두리 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */    
 }
 
 /* 푸터 */
@@ -89,6 +87,81 @@
     text-align: center;
     font-size: 0.9rem;
     height: 40px;  /* 고정 높이 */
+}
+
+/* 로그인 폼 */
+.login form {
+    width: 100%;
+    /* padding: 20px; */
+}
+
+.login h1 {
+    font-size: 32px; 
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #2c3e50;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    color: #2c3e50;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+label {
+    font-size: 14px;
+    color: #34495e;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.submit-button {
+    width: 100%;
+    /* padding: 14px; */
+    background-color: #3498db;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    /* margin-top: 20px; */
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #2980b9;
+}
+
+.submit-button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: red;
+    visibility: hidden;
+    min-height: 15px;
+    margin-bottom: 5px;
+    /* margin-top: 10px; */
+    text-align: center;
+    font-size: 16px;
+    z-index: 10;  
+}
+
+.error-message.visible {
+    visibility: visible;
 }
 
 .link-container {

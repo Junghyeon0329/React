@@ -48,13 +48,21 @@ function Announce() {
         <div className="pagination">
             <button 
                 disabled={currentPage === 1} 
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                onClick={() => {
+                    const newPage = Math.max(currentPage - 1, 1);
+                    updateState('announcementPage', newPage);
+                    fetchAnnouncements(newPage); // 페이지 변경 시 공지사항 재로딩
+                }}
             >
                 &lt;
             </button>
             <button 
                 disabled={currentPage === Math.ceil(totalPages / 5) || totalPages === 0} 
-                onClick={() => setPage((prev) => Math.min(prev + 1, Math.ceil(totalPages / 5)))}
+                onClick={() => {
+                    const newPage = Math.min(currentPage + 1, Math.ceil(totalPages / 5));
+                    updateState('announcementPage', newPage);
+                    fetchAnnouncements(newPage); // 페이지 변경 시 공지사항 재로딩
+                }}
             >
                 &gt;
             </button>
@@ -67,7 +75,7 @@ function Announce() {
 
     useEffect(() => {
         fetchAnnouncements(state.announcementPage); // 처음 컴포넌트가 마운트될 때 데이터 가져오기
-    }, []); // 빈 배열([])을 넣어 컴포넌트가 처음 렌더링될 때만 호출되도록 함
+    }, []);
 
     return (
         <div className="grid-item Announce">     

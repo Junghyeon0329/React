@@ -3,6 +3,7 @@ import axios from 'axios';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
 import AccountModal from '../Modal/AccountModal';
+import './Login.css';
 
 function Login() {
     const [state, setState] = useState({
@@ -18,7 +19,7 @@ function Login() {
         setState((prev) => ({ ...prev, [key]: value }));
     };
 
-    const { loginUser } = useUser();
+    const { user, loginUser, logoutUser } = useUser();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,10 +37,16 @@ function Login() {
           if (access && refresh) {
             loginUser({ ...user, accessToken: access, refreshToken: refresh });
           }
-          updateState('error', '로그인 성공');
+          updateState('loggedInUser', user);
+          updateState('error', '');
         } catch (error) {
           updateState('error', '이메일 또는 비밀번호가 잘못되었습니다.');
         }
+    };
+    const handleLogout = () => {
+        logoutUser();
+        updateState('email', ''); 
+        updateState('password', '');
     };
 
     const handleSignUpSubmit = async (e) => {
@@ -82,6 +89,18 @@ function Login() {
     };
     return (
         <div className="grid-item login">
+            {user ? ( 
+                <div className="user-card">
+                    <img
+                        src={user?.avatar || '/images/person.svg'}
+                        alt="User"
+                        className={`user-avatar ${!user?.avatar ? 'no-avatar' : ''}`}
+                    />
+                    <p>{state.loggedInUser.email}</p>
+                    <button onClick={handleLogout}>로그아웃</button>
+                </div>
+            ) : (
+            // 로그인 폼
             <form onSubmit={handleSubmit}>
                 <h1>로그인</h1>
                 <div>
@@ -112,7 +131,9 @@ function Login() {
                 </p>
 
                 <button type="submit" className="submit-button"> 제출하기 </button>
-            </form>
+            </form>  
+        )}
+        {!state.loggedInUser && (
             <div className="link-container">
                 <button
                     onClick={() => {
@@ -130,7 +151,8 @@ function Login() {
                     }}
                 > 비밀번호 초기화 </button>
             </div>
-    
+        )}
+        
         {state.showSignUp && (
             <AccountModal
             title="회원가입"

@@ -1,0 +1,24 @@
+.user-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  .user-avatar {
+    width: 200px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 2px solid white;
+  }
+  
+  .user-avatar.no-avatar {
+    background-color: #f0f0f0;
+  }
+  
+  .user-info {
+    font-size: 2em;
+    color: #dcdde1;
+    margin-bottom: 10px;
+  }

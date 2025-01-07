@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
 import './Announce.css';
+import AccountModal from '../Modal/AccountModal';
 
 function Announce() {
-    // state 객체로 모든 상태 관리
     const [state, setState] = useState({
         email: '', // 로그인 시 입력한 이메일
         password: '', // 로그인 시 입력한 비밀번호
@@ -15,6 +15,7 @@ function Announce() {
         announcementTotalPages: 1, // 전체 페이지 수
         NoticeTitle: '', // 공지사항 제목
         NoticeContent: '', // 공지사항 내용
+        selectedNotice: false, // 선택된 공지사항
     });
 
     // 상태 업데이트 함수
@@ -24,7 +25,7 @@ function Announce() {
 
     const { user } = useUser();
 
-    const fetchAnnouncements = async (page) => {
+    const fetchAnnouncements = useCallback(async (page) => {
         try {
             const response = await axiosInstance.get(API_URLS.NOTICE, {
                 params: { page }
@@ -42,7 +43,7 @@ function Announce() {
             console.error('Failed to fetch announcements:', error);
             updateState('announcements', [{ title: "내용 없음", description: "공지사항을 불러오는 데 실패했습니다." }]);
         }
-    };
+    }, []);
 
     const createPagination = (currentPage, totalPages, setPage) => (
         <div className="pagination">
@@ -73,9 +74,17 @@ function Announce() {
         fetchAnnouncements(state.announcementPage);
     };
 
+    const openNoticeModal = (notice) => {
+        const fields = [
+          { label: '제목', value: notice.title },   // 공지사항 제목
+          { label: '내용', value: notice.content },  // 공지사항 내용
+        ];
+        updateState('selectedNotice', fields);
+    };
+
     useEffect(() => {
-        fetchAnnouncements(state.announcementPage); // 처음 컴포넌트가 마운트될 때 데이터 가져오기
-    }, []);
+        fetchAnnouncements(state.announcementPage);
+    }, [fetchAnnouncements, state.announcementPage]); 
 
     return (
         <div className="grid-item Announce">     
@@ -111,7 +120,7 @@ function Announce() {
                         state.announcements
                         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
                         .map((item, index) => (
-                            <tr key={item.id} >
+                            <tr key={item.id} onClick={() => openNoticeModal(item)} style={{ cursor: 'pointer' }}>
                                 <td>{(state.announcementPage - 1) * 5 + index + 1}</td> 
                                 <td>{item.title}</td>
                                 <td>
@@ -127,6 +136,13 @@ function Announce() {
                     )}
                 </tbody>
             </table> 
+            {state.selectedNotice  && (
+                <AccountModal
+                title="공지사항"
+                fields={state.selectedNotice}
+                onClose={() => updateState('selectedNotice', false)}
+                />
+            )}
         </div>
     );
 }

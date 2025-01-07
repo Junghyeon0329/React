@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
-import AccountModal from './AccountModal';
+import AccountModal from '../Modal/AccountModal';
 
 function Login() {
     const [state, setState] = useState({
@@ -18,7 +18,7 @@ function Login() {
         setState((prev) => ({ ...prev, [key]: value }));
     };
 
-    const { user, loginUser } = useUser();
+    const { loginUser } = useUser();
 
     const handleSubmit = async (e) => {
         e.preventDefault();

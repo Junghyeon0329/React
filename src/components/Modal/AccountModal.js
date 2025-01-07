@@ -1,7 +1,7 @@
 import React from 'react';
 import './AccountModal.css';
 
-const FormModal = ({ title, fields, onSubmit, onClose, error }) => {
+const AccountModal = ({ title, fields, onSubmit, onClose, error }) => {
   return (
     <div className="modal">
       <div className="modal-content">
@@ -43,4 +43,4 @@ const FormModal = ({ title, fields, onSubmit, onClose, error }) => {
   );
 };
 
-export default FormModal;
+export default AccountModal;

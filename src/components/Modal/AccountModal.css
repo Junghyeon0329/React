@@ -1,21 +1,4 @@
-/* .input-field {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    color: #2c3e50;
-    background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
-}
 
-.input-field:focus {
-    border-color: #3498db;
-    outline: none;
-} */
-
-/* 전체 모달 배경 */
 .modal {
     position: fixed;
     top: 0;

@@ -3,6 +3,7 @@ import axiosInstance from '../../api/axiosInstance';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
 import './Announce.css';
+import InformModal from '../Modal/InformModal';
 import AccountModal from '../Modal/AccountModal';
 
 function Announce() {
@@ -16,6 +17,7 @@ function Announce() {
         NoticeTitle: '', // 공지사항 제목
         NoticeContent: '', // 공지사항 내용
         selectedNotice: false, // 선택된 공지사항
+        NoticeCreate : false, // 공지사항 작성
     });
 
     // 상태 업데이트 함수
@@ -81,6 +83,31 @@ function Announce() {
         ];
         updateState('selectedNotice', fields);
     };
+    const openCreateModal = () => {
+        const fields = [
+          { label: '제목', value: ''},
+          { label: '내용', value: ''},
+        ];
+        updateState('NoticeCreate', fields);
+    };
+
+    const handleNoticeSubmit = async (e) => {
+        e.preventDefault();
+        if (state.NoticeTitle === '' || state.NoticeContent === '') {
+          alert('공지사항 제목과 내용을 모두 입력해주세요.');
+          return;
+        }
+    
+        try {
+          await axiosInstance.post(API_URLS.NOTICE, { title: state.NoticeTitle, content: state.NoticeContent });
+          alert('공지사항 작성 성공!');
+          fetchAnnouncements(state.announcementPage);
+        
+          updateState('NoticeCreate', false)
+        } catch (error) {
+          alert('공지사항 작성 실패');
+        }
+      };
 
     useEffect(() => {
         fetchAnnouncements(state.announcementPage);
@@ -97,7 +124,7 @@ function Announce() {
                     <button className="create-btn" onClick={() => {
                         updateState('NoticeTitle', '');
                         updateState('NoticeContent', '');
-                        // openCreateModal();
+                        openCreateModal();
                     }}> 
                         <img src="/images/writing.svg" alt="writing" /> 
                     </button>
@@ -137,12 +164,39 @@ function Announce() {
                 </tbody>
             </table> 
             {state.selectedNotice  && (
-                <AccountModal
+                <InformModal
                 title="공지사항"
                 fields={state.selectedNotice}
                 onClose={() => updateState('selectedNotice', false)}
                 />
             )}
+            {state.NoticeCreate  && (
+                <AccountModal
+                title="공지사항 작성"
+                fields={[
+                  {
+                    id: 'NoticeTitle',
+                    label: '공지사항 제목',
+                    type: 'title',
+                    value: state.NoticeTitle,
+                    placeholder: '공지사항 제목을 입력하세요',
+                    onChange: (e) => updateState('NoticeTitle', e.target.value)
+                  },
+                  {
+                    id: 'NoticeContent',
+                    label: '공지사항 내용',
+                    type: 'Content',
+                    value: state.NoticeContent,
+                    placeholder: '공지사항 내용을 입력하세요',
+                    onChange: (e) => updateState('NoticeContent', e.target.value)
+                  }
+                ]}
+                onSubmit={handleNoticeSubmit}
+                onClose={() => updateState('NoticeCreate', false)}
+                />
+            )}
+            
+
         </div>
     );
 }

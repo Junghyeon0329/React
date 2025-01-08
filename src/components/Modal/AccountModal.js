@@ -1,6 +1,8 @@
 import React from 'react';
 import './AccountModal.css';
 
+// 회원가입, 비밀번호 찾기
+
 const AccountModal = ({ title, fields, onSubmit, onClose, error }) => {
   return (
     <div className="modal">

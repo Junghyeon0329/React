@@ -10,9 +10,9 @@
     align-items: center;
     z-index: 1000; 
     animation: fadeIn 0.3s ease-out;
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
@@ -20,39 +20,39 @@
     max-width: 90%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     animation: slideUp 0.3s ease-out; 
-  }
-  
-  .modal-title {
+}
+
+.modal-title {
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 20px;
     text-align: center;
     color: #333;
-  }
-  
-  .modal-body {
+}
+
+.modal-body {
     padding: 10px;
-    font-size: 16px;
+    font-size: 20px;
     color: #555;
-  }
+}
 
-  .field-container {
+.field-container {
     margin-bottom: 15px;
-  }
+}
 
-  .field-label {
+.field-label {
     font-weight: 500;
     margin-bottom: 5px;
     display: block;
-  }
+}
 
-  .field-value {
+.field-value {
     font-size: 14px;
     color: #666;
     margin-top: 5px;
-  }
- 
-  .close-button {
+}
+
+.close-button {
     background: none;
     border: none;
     font-size: 24px;
@@ -62,11 +62,16 @@
     right: 10px;
     cursor: pointer;
     transition: color 0.3s;
-  }
-  
-  .close-button:hover {
+}
+
+.close-button:hover {
     color: #ff5c5c; 
-  }
+}
+
+.content-field {
+    min-height: 100px;
+    text-align: left;
+}
   
   /* 애니메이션 - 모달 배경 */
   @keyframes fadeIn {
@@ -89,4 +94,14 @@
       opacity: 1;
     }
   }
+
+
+  
+
+
+  
+  
+  
+
+  
   

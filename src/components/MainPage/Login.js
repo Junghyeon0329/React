@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
@@ -23,6 +23,8 @@ function Login() {
 
     const { user, loginUser, logoutUser } = useUser();
 
+    useEffect(() => {}, [loginUser]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -35,10 +37,13 @@ function Login() {
         try {
           const response = await axios.post(API_URLS.LOGIN, { email, password });
           const { access, refresh, user } = response.data;
-    
-          if (access && refresh) {
-            loginUser({ ...user, accessToken: access, refreshToken: refresh });
+
+          if (!access || !refresh) {
+            throw new Error('Access token or refresh token missing');
           }
+
+          loginUser({ ...user, accessToken: access, refreshToken: refresh });      
+        
           updateState('loggedInUser', user);
           updateState('error', '');
         } catch (error) {

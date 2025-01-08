@@ -9,14 +9,12 @@ const axiosInstance = axios.create({
 // 요청 인터셉터
 axiosInstance.interceptors.request.use(
   (config) => {
-    // LocalStorage에서 access token을 가져오기
+    
     const accessToken = localStorage.getItem('authToken');
     
-    // access token이 있으면 Authorization 헤더에 추가
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
-    }
-    
+    }    
     return config;
   },
   (error) => {

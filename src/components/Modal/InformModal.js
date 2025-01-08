@@ -1,5 +1,5 @@
 import React from 'react';
-import './InformModal.css'; // CSS 파일을 별도로 분리하여 스타일 적용
+import './InformModal.css'; 
 
 const InformModal = ({ title, fields, onClose }) => {
   return (
@@ -12,14 +12,19 @@ const InformModal = ({ title, fields, onClose }) => {
 
         <h2 className="modal-title">{title}</h2>
         <div className="modal-body">
-          {fields.map((field, index) => (
-            <div key={index} className="field-container">
-              <label htmlFor={field.id} className="field-label">
-                {field.label}
-              </label>
-              <p className="field-value">{field.value || "정보 없음"}</p> {/* 텍스트로 값 표시 */}
-            </div>
-          ))}
+          {fields.map((field, index) => {
+            const fieldClass = field.label === "내용" && title === "공지사항" ? "content-field" : "";
+            return (
+              <div key={index} className="field-container">
+                <label htmlFor={field.id} className="field-label">
+                  {field.label}
+                </label>
+                <p className={`field-value ${fieldClass}`}>
+                  {field.value || "정보 없음"}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -9,11 +9,11 @@ const AccountModal = ({ title, fields, onSubmit, onClose, error }) => {
           &times; 
         </button>
 
-        <h2>{title}</h2>
+        <h2 className="modal-title">{title}</h2>
         <form onSubmit={onSubmit}>
           {fields.map((field, index) => (
-            <div key={index}>
-              <label htmlFor={field.id}>{field.label}</label>
+            <div key={index} className="input-group">
+              <label htmlFor={field.id} className="input-label">{field.label}</label>
               <input
                 type={field.type}
                 id={field.id}
@@ -25,14 +25,7 @@ const AccountModal = ({ title, fields, onSubmit, onClose, error }) => {
             </div>
           ))}
 
-          <p
-            style={{
-              color: 'red',
-              minHeight: '20px',
-              marginTop: '10px',
-              visibility: error ? 'visible' : 'hidden',
-            }}
-          >
+          <p className="error-message" style={{ visibility: error ? 'visible' : 'hidden' }}>
             {error}
           </p>
 

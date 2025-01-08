@@ -3,6 +3,7 @@ import axios from 'axios';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
 import AccountModal from '../Modal/AccountModal';
+import InformModal from '../Modal/InformModal';
 import './Login.css';
 
 function Login() {
@@ -13,6 +14,7 @@ function Login() {
         signUpError: '', // 회원가입 오류 메시지
         ResetError: '', // 비밀번호 리셋 오류 메시지
         showSignUp: false, // 회원가입 폼의 표시 여부
+        showUserInfo: false, // 사원정보 폼의 표시 여부
     });
 
     const updateState = (key, value) => {
@@ -48,6 +50,22 @@ function Login() {
         updateState('email', ''); 
         updateState('password', '');
     };
+    const openModal = () => {
+        updateState('showUserInfo', true); 
+        updateState('showSignUp', false);
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A'; // 날짜가 없으면 'N/A' 반환
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-CA'); // 'YYYY-MM-DD' 형식
+    };
+
+    const fields = [
+        { id: '사원번호', label: '사원번호', type: 'text', value: user?.username || 'N/A' },
+        { id: '이메일', label: '이메일', type: 'email', value: user?.email || 'N/A' },
+        { id: '등록일', label: '등록일', type: 'text', value: formatDate(user?.joinedDate) }, // 날짜 포맷팅 적용
+    ];
 
     const handleSignUpSubmit = async (e) => {
         e.preventDefault();
@@ -96,107 +114,120 @@ function Login() {
                         alt="User"
                         className={`user-avatar ${!user?.avatar ? 'no-avatar' : ''}`}
                     />
-                    <p>{state.loggedInUser.email}</p>
-                    <button onClick={handleLogout}>로그아웃</button>
+                    
+                    <p className="userstate">
+                        {state.loggedInUser.email}
+                    </p>
+                    <div className="button-container">
+                        <button className="user-info-btn" onClick={openModal}> 사원 정보 </button>
+                        <button className="logout-btn" onClick={handleLogout}> 로그 아웃 </button>
+                    </div>
                 </div>
             ) : (
-            // 로그인 폼
-            <form onSubmit={handleSubmit}>
-                <h1>로그인</h1>
-                <div>
-                    <label htmlFor="email">이메일</label>
-                    <input
-                        type="text"
-                        id="email"
-                        value={state.email}
-                        onChange={(e) => setState({ ...state, email: e.target.value })}
-                        placeholder="이메일을 입력하세요"
-                        className="input-field"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">비밀번호</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={state.password}
-                        onChange={(e) => setState({ ...state, password: e.target.value })}
-                        placeholder="비밀번호를 입력하세요"
-                        className="input-field"
-                    />
-                </div>
+                // 로그인 폼
+                <form onSubmit={handleSubmit}>
+                    <h1>로그인</h1>
+                    <div>
+                        <label htmlFor="email">이메일</label>
+                        <input
+                            type="text"
+                            id="email"
+                            value={state.email}
+                            onChange={(e) => setState({ ...state, email: e.target.value })}
+                            placeholder="이메일을 입력하세요"
+                            className="input-field"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="password">비밀번호</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={state.password}
+                            onChange={(e) => setState({ ...state, password: e.target.value })}
+                            placeholder="비밀번호를 입력하세요"
+                            className="input-field"
+                        />
+                    </div>
 
-                <p className={`error-message ${state.error ? 'visible' : ''}`}>
-                    {state.error}
-                </p>
+                    <p className={`error-message ${state.error ? 'visible' : ''}`}>
+                        {state.error}
+                    </p>
 
-                <button type="submit" className="submit-button"> 제출하기 </button>
-            </form>  
-        )}
-        {!state.loggedInUser && (
-            <div className="link-container">
-                <button
-                    onClick={() => {
-                        updateState('signUpEmail', '');
-                        updateState('signUpPassword', '');
-                        updateState('showSignUp', true);
-                        updateState('showResetPassword', false);
-                    }}
-                > 회원가입 </button>
-                <button
-                    onClick={() => {
-                        updateState('resetEmail', '');
-                        updateState('showResetPassword', true);
-                        updateState('showSignUp', false);
-                    }}
-                > 비밀번호 초기화 </button>
-            </div>
-        )}
+                    <button type="submit" className="submit-button"> 제출하기 </button>
+                </form>  
+            )}
+            {!user && (
+                <div className="link-container">
+                    <button
+                        onClick={() => {
+                            updateState('signUpEmail', '');
+                            updateState('signUpPassword', '');
+                            updateState('showSignUp', true);
+                            updateState('showResetPassword', false);
+                        }}
+                    > 회원가입 </button>
+                    <button
+                        onClick={() => {
+                            updateState('resetEmail', '');
+                            updateState('showResetPassword', true);
+                            updateState('showSignUp', false);
+                        }}
+                    > 비밀번호 초기화 </button>
+                </div>
+            )}
         
-        {state.showSignUp && (
-            <AccountModal
-            title="회원가입"
-            fields={[
-                {
-                    id: 'signUpEmail',
+            {state.showSignUp && (
+                <AccountModal
+                title="회원가입"
+                fields={[
+                    {
+                        id: 'signUpEmail',
+                        label: '이메일',
+                        type: 'email',
+                        value: state.signUpEmail,
+                        placeholder: '이메일을 입력하세요',
+                        onChange: (e) => updateState('signUpEmail', e.target.value),
+                    },
+                    {
+                        id: 'signUpPassword',
+                        label: '비밀번호',
+                        type: 'password',
+                        value: state.signUpPassword,
+                        placeholder: '비밀번호를 입력하세요',
+                        onChange: (e) => updateState('signUpPassword', e.target.value),
+                    },
+                ]}
+                onSubmit={handleSignUpSubmit}
+                onClose={() => updateState('showSignUp', false)}
+                error={state.signUpError} // 오류 메시지 전달
+                />
+            )}
+            {state.showResetPassword && (
+                <AccountModal
+                title="비밀번호 초기화"
+                fields={[
+                    {
+                    id: 'resetEmail',
                     label: '이메일',
                     type: 'email',
-                    value: state.signUpEmail,
+                    value: state.resetEmail,
                     placeholder: '이메일을 입력하세요',
-                    onChange: (e) => updateState('signUpEmail', e.target.value),
-                },
-                {
-                    id: 'signUpPassword',
-                    label: '비밀번호',
-                    type: 'password',
-                    value: state.signUpPassword,
-                    placeholder: '비밀번호를 입력하세요',
-                    onChange: (e) => updateState('signUpPassword', e.target.value),
-                },
-            ]}
-            onSubmit={handleSignUpSubmit}
-            onClose={() => updateState('showSignUp', false)}
-            error={state.signUpError} // 오류 메시지 전달
-            />
-        )}
-        {state.showResetPassword && (
-            <AccountModal
-            title="비밀번호 초기화"
-            fields={[
-                {
-                id: 'resetEmail',
-                label: '이메일',
-                type: 'email',
-                value: state.resetEmail,
-                placeholder: '이메일을 입력하세요',
-                onChange: (e) => updateState('resetEmail', e.target.value),
-                },
-            ]}
-            onSubmit={handleResetPasswordSubmit}
-            onClose={() => updateState('showResetPassword', false)}
-            error={state.ResetError} // 오류 메시지 전달
-            />
-        )}
+                    onChange: (e) => updateState('resetEmail', e.target.value),
+                    },
+                ]}
+                onSubmit={handleResetPasswordSubmit}
+                onClose={() => updateState('showResetPassword', false)}
+                error={state.ResetError} // 오류 메시지 전달
+                />
+            )}
+            {state.showUserInfo && (
+                <InformModal
+                title="사원 정보"
+                fields={fields}
+                onClose={() => updateState('showUserInfo', false)}
+                />
+            )}
 
         </div>
 

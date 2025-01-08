@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 50px;
   }
   .user-avatar {
     width: 200px;
@@ -22,3 +22,57 @@
     color: #dcdde1;
     margin-bottom: 10px;
   }
+
+  .userstate{
+    font-size: 20px;
+    color: black;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 0px;
+  }
+  
+  .user-info-btn,
+  .logout-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+    flex: 1;
+    white-space: nowrap;
+  }
+  
+  /* User Info 버튼 스타일 */
+  .user-info-btn {
+    background-color: #3b5998;
+  }
+  
+  .user-info-btn:hover {
+    background-color: #2d4373;
+    transform: scale(1.05);
+  }
+  
+  /* Log Out 버튼 스타일 */
+  .logout-btn {
+    background-color: #00796b;
+  }
+  
+  .logout-btn:hover {
+    background-color: #004d40;
+    transform: scale(1.05);
+  }
+  
+  .logout-btn:active,
+  .user-info-btn:active {
+    transform: scale(1);
+  }
+  

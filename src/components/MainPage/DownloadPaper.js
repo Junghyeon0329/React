@@ -1,9 +1,21 @@
 import React from 'react';
+import { useUser } from '../../contexts/UserContext';
 import axios from 'axios';
 import './DownloadPaper.css';
 
 function DownloadPaper() {
+    // useUser 훅을 사용하여 로그인 상태 확인
+    const { user } = useUser();
+
+    // 파일 다운로드 처리 함수
     const handleDownload = async (fileType) => {
+        // 로그인이 안되어 있으면 경고창 표시하고 다운로드 중지
+        if (!user) {
+            alert("로그인 후 사용 가능한 기능입니다.");
+            return;
+        }
+
+        // 로그인된 상태에서 파일 다운로드 진행 (API 요청 부분)
         // try {
         //     const response = await axios.get(`http://localhost:5000/download/${fileType}`, {
         //         responseType: 'blob', // 응답을 blob(파일) 형식으로 받음

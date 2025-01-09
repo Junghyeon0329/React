@@ -3,6 +3,7 @@ import React from 'react';
 import Login from './Login';
 import Announce from './Announce';
 import Calendar from './Calendar';
+import DownloadPaper from './DownloadPaper';
 import ErrorBoundary from '../ErrorBoundary';
 
 function MainPage() {
@@ -14,9 +15,10 @@ function MainPage() {
 
       <ErrorBoundary>
         <div className="grid-container">
-          <Login />
-          <Announce />
-          <Calendar />
+            <Announce />
+            <Login />
+            <DownloadPaper />
+            <Calendar />
         </div>
       </ErrorBoundary>
 

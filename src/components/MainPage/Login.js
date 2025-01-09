@@ -23,7 +23,7 @@ function Login() {
 
     const { user, loginUser, logoutUser } = useUser();
 
-    useEffect(() => {}, [loginUser]);
+    // useEffect(() => {}, [loginUser]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

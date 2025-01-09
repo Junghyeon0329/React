@@ -8,9 +8,9 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   
   const loginUser = (userData) => {
-    setUser(userData);  // 로그인 시 사용자 정보를 상태에 저장
-    localStorage.setItem('authToken', userData.accessToken);  // authToken 저장
-    localStorage.setItem('refreshToken', userData.refreshToken);  // refreshToken 저장
+    localStorage.setItem('authToken', userData.accessToken);
+    localStorage.setItem('refreshToken', userData.refreshToken);
+    setUser(userData);
   };
 
   const logoutUser = () => {

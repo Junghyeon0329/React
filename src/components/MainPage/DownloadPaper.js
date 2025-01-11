@@ -37,12 +37,12 @@ function DownloadPaper() {
         { name: '회의록', fileType: 'meeting-notes' },
         { name: '계획서', fileType: 'plan-document' },
         { name: '연구보고서', fileType: 'research-report' },        
-        { name: '경비보고서', fileType: 'report' },
-        { name: '휴가신청서', fileType: 'plan-2' },
-        { name: '구매요청서', fileType: 'meeting-notes' },
-        { name: '퇴직서/사직서', fileType: 'research-report' },
-        { name: '비밀 유지 계약서', fileType: 'plan-document' },
-        { name: '출장비 내역서', fileType: 'report' },
+        { name: '경비보고서', fileType: 'expense-report' }, 
+        { name: '휴가신청서', fileType: 'vacation-request' },
+        { name: '구매요청서', fileType: 'purchase-request' },
+        { name: '퇴직서/사직서', fileType: 'resignation-letter' },
+        { name: '비밀 유지 계약서', fileType: 'nda' },  
+        { name: '출장비 내역서', fileType: 'travel-expenses' },
     ];
 
     return (

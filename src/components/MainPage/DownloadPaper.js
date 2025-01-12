@@ -16,17 +16,20 @@ function DownloadPaper() {
         }
         try {
             const response = await axiosInstance.get(API_URLS.FILE, {
-                params: { fileType }
+                params: { fileType },
+                responseType: 'arraybuffer'
             });
             
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        
+            const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `${fileType}.csv`); // 파일명 설정
+            link.setAttribute('download', `${fileType}.docx`); // 파일명 설정
             document.body.appendChild(link);
             link.click(); 
             link.remove();
-
+    
         } catch (error) {
             console.error("파일 다운로드 중 오류가 발생했습니다.", error);
         }
@@ -34,15 +37,15 @@ function DownloadPaper() {
 
     // 파일 항목 목록
     const files = [
-        { name: '회의록', fileType: 'meeting-notes' },
-        { name: '계획서', fileType: 'plan-document' },
-        { name: '연구보고서', fileType: 'research-report' },        
-        { name: '경비보고서', fileType: 'expense-report' }, 
-        { name: '휴가신청서', fileType: 'vacation-request' },
-        { name: '구매요청서', fileType: 'purchase-request' },
-        { name: '퇴직서/사직서', fileType: 'resignation-letter' },
-        { name: '비밀 유지 계약서', fileType: 'nda' },  
-        { name: '출장비 내역서', fileType: 'travel-expenses' },
+        { name: '회의록', fileType: 'meeting-notes'},
+        { name: '공지문', fileType: 'notice-document'},
+        { name: '프로젝트 기획서', fileType: 'project-report'},        
+        { name: '주간업무보고서', fileType: 'work-report'}, 
+        { name: '연말결산보고서', fileType: 'settlement-report'},
+        { name: '계약서', fileType: 'contact-document'},        
+        { name: '실험보고서', fileType: 'experiment_report'},
+        { name: '기본리포트1', fileType: 'basic_report1'},  
+        { name: '기본리포트2', fileType: 'basic_report2'},
     ];
 
     return (

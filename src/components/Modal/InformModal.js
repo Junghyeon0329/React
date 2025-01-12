@@ -1,7 +1,7 @@
 import React from 'react';
 import './InformModal.css'; 
 
-const InformModal = ({ title, fields, onClose }) => {
+const InformModal = ({ title, fields, onClose, isAdmin, onDelete }) => {
   return (
     <div className="modal">
       <div className="modal-content">
@@ -13,6 +13,7 @@ const InformModal = ({ title, fields, onClose }) => {
         <h2 className="modal-title">{title}</h2>
         <div className="modal-body">
           {fields.map((field, index) => {
+            if (field.label === 'ID') return null;
             const fieldClass = field.label === "내용" && title === "공지사항" ? "content-field" : "";
             return (
               <div key={index} className="field-container">
@@ -26,6 +27,15 @@ const InformModal = ({ title, fields, onClose }) => {
             );
           })}
         </div>
+
+        {/* 관리자라면 삭제 버튼 표시 */}
+        {isAdmin && (
+          <div className="modal-footer">
+            <button className="delete-button" onClick={onDelete}>
+              삭제하기
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

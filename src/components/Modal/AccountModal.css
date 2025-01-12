@@ -107,7 +107,24 @@
   .close-button:hover {
     color: #ff5c5c;
   }
+
+  .content-field {
+    min-height: 150px;    
+  }
   
+  .delete-button {
+    background-color: #f44336; /* 빨간색 */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .delete-button:hover {
+    background-color: #d32f2f; /* 마우스 오버 시 색상 변경 */
+  }
+
   /* 애니메이션 - 모달 배경 */
   @keyframes fadeIn {
     from {

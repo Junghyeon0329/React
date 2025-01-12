@@ -39,10 +39,10 @@ function DownloadPaper() {
     const files = [
         { name: '회의록', fileType: 'meeting-notes'},
         { name: '공지문', fileType: 'notice-document'},
+        { name: '계약서', fileType: 'contact-document'},     
         { name: '프로젝트 기획서', fileType: 'project-report'},        
         { name: '주간업무보고서', fileType: 'work-report'}, 
-        { name: '연말결산보고서', fileType: 'settlement-report'},
-        { name: '계약서', fileType: 'contact-document'},        
+        { name: '연말결산보고서', fileType: 'settlement-report'},           
         { name: '실험보고서', fileType: 'experiment_report'},
         { name: '기본리포트1', fileType: 'basic_report1'},  
         { name: '기본리포트2', fileType: 'basic_report2'},

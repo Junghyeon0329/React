@@ -80,10 +80,12 @@ function Announce() {
         const fields = [
           { label: '제목', value: notice.title },   // 공지사항 제목
           { label: '내용', value: notice.content },  // 공지사항 내용
+          { id: notice.id, label: 'ID', value: notice.id },
         ];
         updateState('selectedNotice', fields);
     };
     const openCreateModal = () => {
+        updateState('error', '');
         const fields = [
           { label: '제목', value: ''},
           { label: '내용', value: ''},
@@ -94,8 +96,8 @@ function Announce() {
     const handleNoticeSubmit = async (e) => {
         e.preventDefault();
         if (state.NoticeTitle === '' || state.NoticeContent === '') {
-          alert('공지사항 제목과 내용을 모두 입력해주세요.');
-          return;
+            updateState('error', '제목과 내용을 모두 입력해주세요.');
+            return;
         }
     
         try {
@@ -108,6 +110,19 @@ function Announce() {
           alert('공지사항 작성 실패');
         }
       };
+    
+    const handleDeleteNotice = async (noticeId) => {
+        try {
+            await axiosInstance.delete(`${API_URLS.NOTICE}`, {
+                data: { board_id: noticeId }
+            });
+            alert('공지사항 삭제 성공!');
+            fetchAnnouncements(state.announcementPage);
+            updateState('selectedNotice', false);
+        } catch (error) {
+            alert('공지사항 삭제 실패');
+        }
+    };
 
     useEffect(() => {
         fetchAnnouncements(state.announcementPage);
@@ -163,11 +178,13 @@ function Announce() {
                     )}
                 </tbody>
             </table> 
-            {state.selectedNotice  && (
+            {state.selectedNotice && (
                 <InformModal
-                title="공지사항"
-                fields={state.selectedNotice}
-                onClose={() => updateState('selectedNotice', false)}
+                    title="공지사항"
+                    fields={state.selectedNotice}
+                    onClose={() => updateState('selectedNotice', false)}
+                    isAdmin={user?.staff}
+                    onDelete={() => handleDeleteNotice(state.selectedNotice[2]?.value)}
                 />
             )}
             {state.NoticeCreate  && (
@@ -192,7 +209,11 @@ function Announce() {
                   }
                 ]}
                 onSubmit={handleNoticeSubmit}
-                onClose={() => updateState('NoticeCreate', false)}
+                onClose={() => {
+                    updateState('NoticeCreate', false);
+                    updateState('error', '');
+                }}
+                error={state.error}
                 />
             )}
             

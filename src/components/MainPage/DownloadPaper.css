@@ -35,6 +35,24 @@
   transform: translateY(2px); 
 }
 
+.Download-title {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 100%;
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+  overflow: hidden;    /* 텍스트가 넘칠 경우 숨기기 (선택 사항) */
+  text-overflow: ellipsis; /* 텍스트가 넘치면 '...' 표시 (선택 사항) */
+}
+
+.Download-title h1 {
+  font-size: 32px; 
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #2c3e50;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
 /* 작은 화면에서 버튼들 크기 조정 */
 @media (max-width: 768px) {
   .file-item {

@@ -11,7 +11,7 @@ function Calendar() {
   };
 
   return (
-    <div className="grid-item Calendar">
+    <div className="grid-item Calendar">      
       <ReactCalendar
         onChange={onChange}
         value={date}

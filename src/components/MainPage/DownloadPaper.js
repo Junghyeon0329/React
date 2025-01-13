@@ -51,7 +51,7 @@ function DownloadPaper() {
     return (
         <div className="grid-item DownloadPaper">
             <div className="Download-title">
-                <h1>문서 다운로드</h1>
+                <h1>자료실</h1>
             </div>
             <div className="file-list">
             

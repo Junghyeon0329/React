@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
@@ -112,57 +112,61 @@ function Login() {
     };
     return (
         <div className="grid-item login">
-            {user ? ( 
-                <div className="user-card">
-                    <img
-                        src={user?.avatar || '/images/person.svg'}
-                        alt="User"
-                        className={`user-avatar ${!user?.avatar ? 'no-avatar' : ''}`}
-                    />
-                    
-                    <p className="userstate">
-                        {state.loggedInUser.email}
-                    </p>
-                    <div className="button-container">
-                        <button className="user-info-btn" onClick={openModal}> 사원 정보 </button>
-                        <button className="logout-btn" onClick={handleLogout}> 로그 아웃 </button>
-                    </div>
-                </div>
-            ) : (
-                // 로그인 폼
-                <form onSubmit={handleSubmit}>
-                    <h1>로그인</h1>
-                    <div>
-                        <label htmlFor="email">이메일</label>
-                        <input
-                            type="text"
-                            id="email"
-                            value={state.email}
-                            onChange={(e) => setState({ ...state, email: e.target.value })}
-                            placeholder="이메일을 입력하세요"
-                            className="input-field"
+            {user ? (  // 로그인 상태 확인
+                <>
+                    <h1>환영합니다!</h1> {/* 로그인 된 경우 표시될 메시지 */}
+                    <div className="user-card">
+                        <img
+                            src={user?.avatar || '/images/person.svg'}
+                            alt="User"
+                            className={`user-avatar ${!user?.avatar ? 'no-avatar' : ''}`}
                         />
+                        <p className="userstate">
+                            {state.loggedInUser.email}
+                        </p>
+                        <div className="button-container">
+                            <button className="user-info-btn" onClick={openModal}>사원 정보</button>
+                            <button className="logout-btn" onClick={handleLogout}>로그 아웃</button>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="password">비밀번호</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={state.password}
-                            onChange={(e) => setState({ ...state, password: e.target.value })}
-                            placeholder="비밀번호를 입력하세요"
-                            className="input-field"
-                        />
-                    </div>
-
-                    <p className={`error-message ${state.error ? 'visible' : ''}`}>
-                        {state.error}
-                    </p>
-
-                    <button type="submit" className="submit-button"> 제출하기 </button>
-                </form>  
+                </>
+            ) : (  // 로그인 상태가 아니라면 로그인 폼을 출력
+                <>
+                    <h1>로그인</h1> {/* 로그인되지 않았을 때 표시될 메시지 */}
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="email">이메일</label>
+                            <input
+                                type="text"
+                                id="email"
+                                value={state.email}
+                                onChange={(e) => setState({ ...state, email: e.target.value })}
+                                placeholder="이메일을 입력하세요"
+                                className="input-field"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="password">비밀번호</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={state.password}
+                                onChange={(e) => setState({ ...state, password: e.target.value })}
+                                placeholder="비밀번호를 입력하세요"
+                                className="input-field"
+                            />
+                        </div>
+    
+                        <p className={`error-message ${state.error ? 'visible' : ''}`}>
+                            {state.error}
+                        </p>
+    
+                        <button type="submit" className="submit-button">제출하기</button>
+                    </form>
+                </>
             )}
-            {!user && (
+            
+            {!user && (  // 로그인되지 않았을 때만 회원가입 및 비밀번호 초기화 버튼 보이기
                 <div className="link-container">
                     <button
                         onClick={() => {
@@ -171,16 +175,21 @@ function Login() {
                             updateState('showSignUp', true);
                             updateState('showResetPassword', false);
                         }}
-                    > 회원가입 </button>
+                    >
+                        회원가입
+                    </button>
                     <button
                         onClick={() => {
                             updateState('resetEmail', '');
                             updateState('showResetPassword', true);
                             updateState('showSignUp', false);
                         }}
-                    > 비밀번호 초기화 </button>
+                    >
+                        비밀번호 초기화
+                    </button>
                 </div>
             )}
+    
         
             {state.showSignUp && (
                 <AccountModal

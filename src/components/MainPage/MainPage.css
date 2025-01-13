@@ -33,7 +33,7 @@
 /* 그리드 컨테이너 설정 */
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; 
+    grid-template-columns: minmax(150px) 1.5fr 1.5fr;
     grid-template-rows: repeat(3, 1fr);    
     gap: 10px;                           
     height: 100%;                         
@@ -56,12 +56,12 @@
 }
 
 .Announce {
-    grid-column: 2 / 3;
+    grid-column: 2;
     grid-row: 1 / 2;
     min-height: 400px;
     max-height: 410px; 
+    width: 95%;
     min-width: 700px;
-    max-width: 1000px;
     border: 2px solid #ccc; /* 두께 2px, 색상은 연한 회색 */
     border-radius: 8px; /* 둥근 테두리 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */    
@@ -81,12 +81,12 @@
 }
 
 .DownloadPaper {
-    grid-column: 2 / 3;
+    grid-column: 2;
     grid-row: 2 / 3;
     min-height: 100px;
     max-height: 250px;
     min-width: 700px;
-    max-width: 1000px;
+    width: 95%;
     border: 2px solid #ccc; /* 두께 2px, 색상은 연한 회색 */
     border-radius: 8px; /* 둥근 테두리 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
@@ -107,7 +107,6 @@
     border-radius: 8px; /* 둥근 테두리 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 }
-
 
 /* 푸터 */
 .Footer {
@@ -220,4 +219,3 @@ label {
     color: #0056b3;    
     text-decoration: underline; 
 }
-

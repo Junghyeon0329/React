@@ -37,7 +37,6 @@ function Login() {
         try {
           const response = await axios.post(API_URLS.LOGIN, { email, password });
           const { access, refresh, user } = response.data;
-
           if (!access || !refresh) {
             throw new Error('Access token or refresh token missing');
           }
@@ -112,9 +111,13 @@ function Login() {
     };
     return (
         <div className="grid-item login">
-            {user ? (  // 로그인 상태 확인
+            {user ? (
                 <>
-                    <h1>환영합니다!</h1> {/* 로그인 된 경우 표시될 메시지 */}
+                {user.password_expired ? (
+                   <h2 className="password-expired-message">비밀번호 변경이 필요합니다.</h2>
+                ) : (
+                    <h1>환영합니다!</h1>
+                )}                
                     <div className="user-card">
                         <img
                             src={user?.avatar || '/images/person.svg'}

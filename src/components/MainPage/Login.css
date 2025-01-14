@@ -77,3 +77,8 @@
     transform: scale(1);
   }
   
+  .password-expired-message {
+    color: red;  /* 빨간색 */
+    /* font-size: 1.5rem;  */
+    font-weight: bold;
+}

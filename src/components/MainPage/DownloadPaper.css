@@ -43,6 +43,7 @@
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
   overflow: hidden;    /* 텍스트가 넘칠 경우 숨기기 (선택 사항) */
   text-overflow: ellipsis; /* 텍스트가 넘치면 '...' 표시 (선택 사항) */
+  min-height: 50px;
 }
 
 .Download-title h1 {

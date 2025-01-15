@@ -12,6 +12,9 @@ function Calendar() {
 
   return (
     <div className="grid-item Calendar">      
+      <div className="calendar-title">
+        <h1>Today</h1>
+      </div>
       <ReactCalendar
         onChange={onChange}
         value={date}

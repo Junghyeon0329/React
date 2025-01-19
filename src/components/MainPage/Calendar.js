@@ -13,7 +13,7 @@ function Calendar() {
   return (
     <div className="grid-item Calendar">      
       <div className="calendar-title">
-        <h1>Today</h1>
+        <h1>캘린더</h1>
       </div>
       <ReactCalendar
         onChange={onChange}

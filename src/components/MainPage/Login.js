@@ -126,7 +126,7 @@ function Login() {
 		}
 		
         try {
-          await axiosInstance.put(API_URLS.LOGIN, { 
+          await axiosInstance.put(API_URLS.USER, { 
 			email: state.email, 
 			current_password: state.currentPassword,
 			new_password : state.newPassword
@@ -134,11 +134,11 @@ function Login() {
           alert('비밀번호 변경 성공');
           updateState('showPasswordChange', false)
 		  updateState('error', '');
+		  window.location.reload();
         } catch (error) {
           alert('비밀번호 변경 실패');
         }
       };
-
 
 	return (
 		<div className="grid-item login">

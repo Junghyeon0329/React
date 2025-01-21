@@ -29,20 +29,20 @@ function Announce() {
 
 	const { user } = useUser();
 
-	const fetchAnnouncements = useCallback(async (page) => {
+	const fetchAnnouncements = useCallback(async (page, query = '') => {
 		try {
 			const response = await axiosInstance.get(API_URLS.NOTICE, {
-				params: { page }
+				params: { page, query } // 검색어가 있으면 포함
 			});
-			
+	
 			if (!response.data.results || response.data.results.length === 0) {
 				updateState('announcements', [{ title: "내용 없음", description: "공지사항이 없습니다." }]);
 			} else {
 				updateState('announcements', response.data.results);
 			}
-
+	
 			updateState('announcementTotalPages', response.data.total_count);
-
+	
 		} catch (error) {
 			console.error('Failed to fetch announcements:', error);
 			updateState('announcements', [{ title: "내용 없음", description: "공지사항을 불러오는 데 실패했습니다." }]);
@@ -75,9 +75,12 @@ function Announce() {
 	);
 
 	const refreshData = () => {
-		fetchAnnouncements(state.announcementPage);
+		if (state.searchQuery) {
+			fetchAnnouncements(state.announcementPage, state.searchQuery);
+		} else {
+			fetchAnnouncements(state.announcementPage);
+		}
 	};
-
     useEffect(() => {
         const handler = setTimeout(() => {
             updateState('debouncedQuery', state.searchQuery);
@@ -181,7 +184,7 @@ function Announce() {
 						type="text"
 						value={state.searchQuery}
 						onChange={(e) => updateState('searchQuery', e.target.value)}
-						placeholder="공지사항 검색"
+						placeholder="검색"
 						className="input-field"
 					/>
 					{/* <ul>

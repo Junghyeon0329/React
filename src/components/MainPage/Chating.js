@@ -74,19 +74,19 @@ function Chat() {
                         className={`chat-type-button ${chatType === 'all' ? 'active' : ''}`}
                         onClick={() => handleChatTypeChange('all')}
                     >
-                        전체 채팅
+                        모두
                     </button>
                     <button
                         className={`chat-type-button ${chatType === 'team' ? 'active' : ''}`}
                         onClick={() => handleChatTypeChange('team')}
                     >
-                        팀 채팅
+                        팀
                     </button>
                     <button
                         className={`chat-type-button ${chatType === 'direct' ? 'active' : ''}`}
                         onClick={() => handleChatTypeChange('direct')}
                     >
-                        특정인 채팅
+                        개인
                     </button>
                 </div>
                 <div className="chat-main">

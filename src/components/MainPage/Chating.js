@@ -68,51 +68,50 @@ function Chat() {
 
     return (
         <div className="grid-item Chating">
-            <div className="chat-sidebar">
-                <button
-                    className={`chat-type-button ${chatType === 'all' ? 'active' : ''}`}
-                    onClick={() => handleChatTypeChange('all')}
-                >
-                    전체 채팅
-                </button>
-                <button
-                    className={`chat-type-button ${chatType === 'team' ? 'active' : ''}`}
-                    onClick={() => handleChatTypeChange('team')}
-                >
-                    팀 채팅
-                </button>
-                <button
-                    className={`chat-type-button ${chatType === 'direct' ? 'active' : ''}`}
-                    onClick={() => handleChatTypeChange('direct')}
-                >
-                    특정인 채팅
-                </button>
-            </div>
-            <div className="chat-main">
-                <div className="chating-title">
-                    <h1>메신저 - {chatType === 'all' ? '전체 채팅' : chatType === 'team' ? '팀 채팅' : '특정인 채팅'}</h1>
+            <div className="chat-container">
+                <div className="chat-sidebar">
+                    <button
+                        className={`chat-type-button ${chatType === 'all' ? 'active' : ''}`}
+                        onClick={() => handleChatTypeChange('all')}
+                    >
+                        전체 채팅
+                    </button>
+                    <button
+                        className={`chat-type-button ${chatType === 'team' ? 'active' : ''}`}
+                        onClick={() => handleChatTypeChange('team')}
+                    >
+                        팀 채팅
+                    </button>
+                    <button
+                        className={`chat-type-button ${chatType === 'direct' ? 'active' : ''}`}
+                        onClick={() => handleChatTypeChange('direct')}
+                    >
+                        특정인 채팅
+                    </button>
                 </div>
-                <div className="chat-window">
-                    <div className="message-list">
-                        {messages
-                            .filter((message) => message.chatType === chatType)
-                            .map((message) => (
-                                <div key={message.id} className="message-item">
-                                    <span className="message-user">{message.user}:</span>
-                                    <span className="message-text">{message.text}</span>
-                                    <span className="message-timestamp">{message.timestamp}</span>
-                                </div>
-                            ))}
-                    </div>
-                    <div className="chat-input">
-                        <input
-                            type="text"
-                            placeholder="메시지를 입력하세요..."
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                        />
-                        <button onClick={handleSendMessage}>전송</button>
+                <div className="chat-main">
+                    <div className="chat-window">
+                        <div className="message-list">
+                            {messages
+                                .filter((message) => message.chatType === chatType)
+                                .map((message) => (
+                                    <div key={message.id} className="message-item">
+                                        <span className="message-user">{message.user}:</span>
+                                        <span className="message-text">{message.text}</span>
+                                        <span className="message-timestamp">{message.timestamp}</span>
+                                    </div>
+                                ))}
+                        </div>
+                        <div className="chat-input">
+                            <input
+                                type="text"
+                                placeholder="메시지를 입력하세요..."
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            />
+                            <button onClick={handleSendMessage}>전송</button>
+                        </div>
                     </div>
                 </div>
             </div>

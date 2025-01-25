@@ -15,45 +15,42 @@
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   }
 
-/* 채팅 레이아웃 스타일 */
-.grid-item.Chating {
-  display: flex;
-  height: 200vh;
-  font-family: 'Arial', sans-serif;
-}
+  .chat-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+  }
+  /* 채팅 사이드바 스타일 */
+  .chat-sidebar {
+    width: 200px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
 
-/* 채팅 사이드바 스타일 */
-.chat-sidebar {
-  width: 200px;
-  background-color: #f8f9fa;
-  border-right: 1px solid #ddd;
-  padding: 20px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
+  .chat-type-button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #e9ecef;
+    color: #495057;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s, color 0.3s;
+  }
 
-.chat-type-button {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #e9ecef;
-  color: #495057;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: left;
-  transition: background-color 0.3s, color 0.3s;
-}
+  .chat-type-button:hover {
+    background-color: #dee2e6;
+  }
 
-.chat-type-button:hover {
-  background-color: #dee2e6;
-}
-
-.chat-type-button.active {
-  background-color: #007bff;
-  color: white;
-}
+  .chat-type-button.active {
+    background-color: #007bff;
+    color: white;
+  }
 
 /* 채팅 메인 영역 스타일 */
 .chat-main {
@@ -61,6 +58,7 @@
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
+  min-width: 500px;
 }
 
 .chating-title {
@@ -75,7 +73,7 @@
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px);
+  height: 350px;
   padding: 20px;
 }
 
@@ -86,6 +84,8 @@
   background-color: #f8f9fa;
   border: 1px solid #ddd;
   border-radius: 8px;
+  min-width: 400px;
+  min-height: 300px;
 }
 
 .message-item {

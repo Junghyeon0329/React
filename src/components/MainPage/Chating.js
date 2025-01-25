@@ -7,93 +7,76 @@ function Chat() {
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [socket, setSocket] = useState(null);
-    const [chatType, setChatType] = useState('all'); // "all", "team", or "direct"
 
     useEffect(() => {
-        if (!user) return;
-
         // WebSocket 연결 설정
-        const ws = new WebSocket('ws://localhost:8080');
-
+        const ws = new WebSocket('ws://localhost:8000/ws/chat/');
         ws.onopen = () => {
             console.log('WebSocket 연결이 열렸습니다.');
         };
-
         ws.onmessage = (event) => {
-            const newMessage = JSON.parse(event.data);
+            const newMessage = JSON.parse(event.data);  // 서버에서 보낸 메시지 처리
             setMessages((prevMessages) => [...prevMessages, newMessage]);
         };
-
         ws.onclose = () => {
             console.log('WebSocket 연결이 닫혔습니다.');
         };
-
         setSocket(ws);
 
+        // 컴포넌트가 언마운트 될 때 WebSocket 연결 종료
         return () => {
-            ws.close();
+            if (ws) {
+                ws.close();
+            }
         };
-    }, [user]);
+    }, []);
 
     const handleSendMessage = () => {
-        if (!user) {
-            alert('로그인 후 사용 가능한 기능입니다.');
-            return;
-        }
+        if (inputValue.trim() === '') return;
 
-        if (inputValue.trim() === '') {
-            return;
-        }
-
-        const newMessage = {
-            id: Date.now(),
-            user: user.name,
+        const message = {
+            user: user.name,  // 실제 사용자 이름을 넣어주세요.
             text: inputValue,
             timestamp: new Date().toLocaleTimeString(),
-            chatType: chatType, // 현재 채팅 타입 추가
         };
 
-        // WebSocket을 통해 메시지 전송
+        // WebSocket을 통해 서버로 메시지 전송
         if (socket) {
-            socket.send(JSON.stringify(newMessage));
+            socket.send(JSON.stringify(message));
         }
 
-        setInputValue('');
+        setInputValue('');  // 메시지 전송 후 입력창 초기화
     };
-
-    const handleChatTypeChange = (type) => {
-        setChatType(type);
-        setMessages([]); // 채팅 유형 변경 시 메시지 초기화
-    };
-
+    
     return (
         <div className="grid-item Chating">
             <div className="chat-container">
+                {/* Sidebar 변경 */}
                 <div className="chat-sidebar">
-                    <button
-                        className={`chat-type-button ${chatType === 'all' ? 'active' : ''}`}
-                        onClick={() => handleChatTypeChange('all')}
-                    >
-                        모두
-                    </button>
-                    <button
-                        className={`chat-type-button ${chatType === 'team' ? 'active' : ''}`}
-                        onClick={() => handleChatTypeChange('team')}
-                    >
-                        팀
-                    </button>
-                    <button
-                        className={`chat-type-button ${chatType === 'direct' ? 'active' : ''}`}
-                        onClick={() => handleChatTypeChange('direct')}
-                    >
-                        개인
-                    </button>
+                    {/* <div className="employee-list">
+                        <h3>사원 정보</h3>
+                        {employees.map((employee) => (
+                            <div key={employee.id} className="employee-item">
+                                <img
+                                    src={employee.profileImage}
+                                    alt={`${employee.name}의 프로필`}
+                                    className="employee-profile-image"
+                                />
+                                <div className="employee-details">
+                                    <span className="employee-name">{employee.name}</span>
+                                    <span className="employee-role">{employee.role}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div> */}
                 </div>
+                
+                {/* Main Chat Section */}
                 <div className="chat-main">
                     <div className="chat-window">
                         <div className="message-list">
                             {messages
-                                .filter((message) => message.chatType === chatType)
+                                // .filter((message) => message.chatType === chatType)
                                 .map((message) => (
                                     <div key={message.id} className="message-item">
                                         <span className="message-user">{message.user}:</span>

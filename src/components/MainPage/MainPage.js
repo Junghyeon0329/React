@@ -2,6 +2,7 @@ import './MainPage.css';
 import React from 'react';
 import Login from './Login';
 import Announce from './Announce';
+import Chating from './Chating'
 import Calendar from './Calendar';
 import DownloadPaper from './DownloadPaper';
 import ErrorBoundary from '../ErrorBoundary';
@@ -17,8 +18,10 @@ function MainPage() {
         <div className="grid-container">
             <Announce />
             <Login />
-            <DownloadPaper />
+            <Chating />
             <Calendar />
+            <DownloadPaper />
+            
         </div>
       </ErrorBoundary>
 

@@ -80,9 +80,35 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 }
 
-.DownloadPaper {
+.Chating {
     grid-column: 2;
     grid-row: 2 / 3;
+    min-width: 700px;
+    width: 95%;
+    min-height: 295px;
+    max-height: 410px;
+    margin-right: 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Calendar {
+    grid-column: 3;
+    grid-row: 2 / 3;
+    min-width: 350px; 
+    max-width: 360px; 
+    min-height: 295px;
+    max-height: 410px;
+    margin-right: 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.DownloadPaper {
+    grid-column: 2;
+    grid-row: 3 / 4;
     min-height: 295px;
     max-height: 300px;
     min-width: 700px;
@@ -92,18 +118,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 }
 
-.Calendar {
-    grid-column: 3;
-    grid-row: 2 / 3;
-    min-width: 350px; 
-    max-width: 360px; 
-    min-height: 295px;
-    max-height: 300px;
-    margin-right: 20px;
-    border: 2px solid #ccc;
-    border-radius: 8px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
 /* 푸터 */
 .Footer {

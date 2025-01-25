@@ -187,11 +187,6 @@ function Announce() {
 						placeholder="검색"
 						className="input-field"
 					/>
-					{/* <ul>
-						{state.announcements.map((notice, index) => (
-							<li key={index}>{notice.title}</li>
-						))}
-					</ul> */}
 					{createPagination(state.announcementPage, state.announcementTotalPages, updateState)}                    
 				</div>
 			</div>

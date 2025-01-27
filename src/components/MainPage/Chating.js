@@ -9,34 +9,46 @@ function Chat() {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        // WebSocket 연결 설정
-        const ws = new WebSocket(`ws://127.0.0.1:9000/ws/chat/`);
-        
-        ws.onopen = () => {
-            console.log('WebSocket 연결이 열렸습니다.');
+        const connectSocket = () => {
+            const ws = new WebSocket(`ws://127.0.0.1:9000/ws/chat/`);
+            
+            ws.onopen = () => {
+                console.log('WebSocket 연결이 열렸습니다.');
+            };
+    
+            ws.onmessage = (event) => {
+                const newMessage = JSON.parse(event.data);
+                setMessages((prevMessages) => [...prevMessages, newMessage]);
+            };
+    
+            ws.onclose = () => {
+                console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
+                setTimeout(connectSocket, 3000); // 3초 후에 재연결 시도
+            };
+    
+            setSocket(ws);
         };
-        ws.onmessage = (event) => {
-            const newMessage = JSON.parse(event.data);  // 서버에서 보낸 메시지 처리
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
-        };
-        ws.onclose = () => {
-            console.log('WebSocket 연결이 닫혔습니다.');
-        };
-        setSocket(ws);
-
-        // 컴포넌트가 언마운트 될 때 WebSocket 연결 종료
+    
+        connectSocket();
+    
         return () => {
-            if (ws) {
-                ws.close();
+            if (socket) {
+                socket.close();
             }
         };
     }, []);
+    
 
     const handleSendMessage = () => {
+        if (!user) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+       
         if (inputValue.trim() === '') return;
-
+        
         const message = {
-            user: user.name,  // 실제 사용자 이름을 넣어주세요.
+            user: user.name,
             text: inputValue,
             timestamp: new Date().toLocaleTimeString(),
         };

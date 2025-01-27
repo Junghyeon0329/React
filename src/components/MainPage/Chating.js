@@ -10,7 +10,8 @@ function Chat() {
 
     useEffect(() => {
         // WebSocket 연결 설정
-        const ws = new WebSocket('ws://localhost:8000/ws/chat/');
+        const ws = new WebSocket(`ws://127.0.0.1:9000/ws/chat/`);
+        
         ws.onopen = () => {
             console.log('WebSocket 연결이 열렸습니다.');
         };

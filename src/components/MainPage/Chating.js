@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../contexts/UserContext';
+import axiosInstance from '../../api/axiosInstance';
+import API_URLS from '../../api/apiURLS';
 import './Chating.css';
 
 function Chat() {
@@ -8,6 +10,7 @@ function Chat() {
         messages: [],
         inputValue: '',
         socket: null,
+        employees: [],
     });
 
     const socketRef = useRef(null);
@@ -15,6 +18,24 @@ function Chat() {
     const updateState = (key, value) => {
         setState((prev) => ({ ...prev, [key]: value }));
     };
+
+    useEffect(() => {
+        const fetchEmployees = async () => {
+            if (!user) {
+                updateState('employees', []);
+                return;
+            }
+
+            try {
+                const response = await axiosInstance.get(API_URLS.USER);
+                updateState('employees', response.data.data);
+            } catch (error) {
+                console.error('사원 정보를 불러오는 데 실패했습니다:', error);
+            }
+        };
+
+        fetchEmployees();
+    }, [user]); 
 
     useEffect(() => {
         const connectSocket = () => {
@@ -73,24 +94,30 @@ function Chat() {
     return (
         <div className="grid-item Chating">
             <div className="chat-container">
-                {/* Sidebar 변경 */}
                 <div className="chat-sidebar">
-                    {/* <div className="employee-list">
-                        <h3>사원 정보</h3>
-                        {employees.map((employee) => (
-                            <div key={employee.id} className="employee-item">
-                                <img
-                                    src={employee.profileImage}
-                                    alt={`${employee.name}의 프로필`}
-                                    className="employee-profile-image"
-                                />
-                                <div className="employee-details">
-                                    <span className="employee-name">{employee.name}</span>
-                                    <span className="employee-role">{employee.role}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div> */}
+                    <div className="employee-list">
+                        {/* <h3>사원 정보</h3> */}
+                        {state.employees.length > 0 ? (
+                            <table className="employee-table">
+                                <thead>
+                                    <tr>
+                                        {/* <th>아이디</th> */}
+                                        <th>이메일</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {state.employees.map((employee) => (
+                                        <tr key={employee.username}>
+                                            {/* <td>{employee.username}</td> */}
+                                            <td>{employee.email}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>로그인이 필요한 기능입니다.</p>
+                        )}
+                    </div>
                 </div>
                 
                 {/* Main Chat Section */}
@@ -101,7 +128,7 @@ function Chat() {
                                 <div key={message.id} className="message-item">
                                     <span className="message-user">{message.user}:</span>
                                     <span className="message-text">{message.text}</span>
-                                    <span className="message-timestamp">{message.timestamp}</span>
+                                    {/* <span className="message-timestamp">{message.timestamp}</span> */}
                                 </div>
                             ))}
                         </div>

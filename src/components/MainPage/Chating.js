@@ -1,66 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../contexts/UserContext';
 import './Chating.css';
 
 function Chat() {
     const { user } = useUser();
-    const [messages, setMessages] = useState([]);
-    const [inputValue, setInputValue] = useState('');
-    const [socket, setSocket] = useState(null);
+    const [state, setState] = useState({
+        messages: [],
+        inputValue: '',
+        socket: null,
+    });
+
+    const socketRef = useRef(null);
+
+    const updateState = (key, value) => {
+        setState((prev) => ({ ...prev, [key]: value }));
+    };
 
     useEffect(() => {
         const connectSocket = () => {
             const ws = new WebSocket(`ws://127.0.0.1:9000/ws/chat/`);
-            
+
             ws.onopen = () => {
                 console.log('WebSocket 연결이 열렸습니다.');
             };
-    
+
             ws.onmessage = (event) => {
                 const newMessage = JSON.parse(event.data);
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
+                updateState('messages', [...state.messages, newMessage]);
             };
-    
+
             ws.onclose = () => {
                 console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
-                setTimeout(connectSocket, 3000); // 3초 후에 재연결 시도
+                setTimeout(connectSocket, 3000);
             };
-    
-            setSocket(ws);
+
+            socketRef.current = ws;
+            updateState('socket', ws);
         };
-    
-        connectSocket();
-    
+
+        if (!socketRef.current) {
+            connectSocket();
+        }
+
         return () => {
-            if (socket) {
-                socket.close();
+            if (socketRef.current) {
+                socketRef.current.close();
             }
         };
-    }, []);
-    
+    }, [state.messages]);
 
     const handleSendMessage = () => {
         if (!user) {
             alert('로그인이 필요합니다.');
             return;
         }
-       
-        if (inputValue.trim() === '') return;
-        
+
+        if (state.inputValue.trim() === '') return;
+
         const message = {
             user: user.name,
-            text: inputValue,
+            text: state.inputValue,
             timestamp: new Date().toLocaleTimeString(),
         };
 
-        // WebSocket을 통해 서버로 메시지 전송
-        if (socket) {
-            socket.send(JSON.stringify(message));
+        if (socketRef.current) {
+            socketRef.current.send(JSON.stringify(message));
         }
 
-        setInputValue('');  // 메시지 전송 후 입력창 초기화
+        updateState('inputValue', ''); // 메시지 전송 후 입력창 초기화
     };
-    
+
     return (
         <div className="grid-item Chating">
             <div className="chat-container">
@@ -88,22 +97,20 @@ function Chat() {
                 <div className="chat-main">
                     <div className="chat-window">
                         <div className="message-list">
-                            {messages
-                                // .filter((message) => message.chatType === chatType)
-                                .map((message) => (
-                                    <div key={message.id} className="message-item">
-                                        <span className="message-user">{message.user}:</span>
-                                        <span className="message-text">{message.text}</span>
-                                        <span className="message-timestamp">{message.timestamp}</span>
-                                    </div>
-                                ))}
+                            {state.messages.map((message) => (
+                                <div key={message.id} className="message-item">
+                                    <span className="message-user">{message.user}:</span>
+                                    <span className="message-text">{message.text}</span>
+                                    <span className="message-timestamp">{message.timestamp}</span>
+                                </div>
+                            ))}
                         </div>
                         <div className="chat-input">
                             <input
                                 type="text"
                                 placeholder="메시지를 입력하세요..."
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
+                                value={state.inputValue}
+                                onChange={(e) => updateState('inputValue', e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                             />
                             <button onClick={handleSendMessage}>전송</button>

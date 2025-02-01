@@ -7,6 +7,7 @@ const API_URLS = {
   RESET_PASSWORD: `${API_BASE_URL}/password-reset/`,
   NOTICE : `${API_BASE_URL}/notice/`,
   REFRESH: `${API_BASE_URL}/api/token/refresh/`,
+  CHAT: `${API_BASE_URL}/chat/`,
 };
 
 export default API_URLS;

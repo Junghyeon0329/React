@@ -164,6 +164,7 @@
   border-collapse: collapse;
   margin-top: 10px;
   overflow: hidden;
+  margin-top: 1px;
 }
 
 .employee-table th,
@@ -185,4 +186,14 @@
 
 .employee-table tr:hover {
   background-color: #e2e2e2;
+}
+
+.employee-table .selected {
+  background-color: #f0f0f0;
+  cursor: pointer; 
+}
+
+.employee-table td {
+  padding: 8px;
+  cursor: pointer;
 }

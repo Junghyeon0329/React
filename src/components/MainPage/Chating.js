@@ -10,7 +10,8 @@ function Chat() {
         messages: [],
         inputValue: '',
         socket: null,
-        employees: [],
+        employees: [],        
+        selectedEmail: null,
     });
 
     const socketRef = useRef(null);
@@ -37,38 +38,49 @@ function Chat() {
         fetchEmployees();
     }, [user]); 
 
-    useEffect(() => {
-        const connectSocket = () => {
-            const ws = new WebSocket(`ws://127.0.0.1:9000/ws/chat/`);
-
-            ws.onopen = () => {
-                console.log('WebSocket 연결이 열렸습니다.');
-            };
-
-            ws.onmessage = (event) => {
-                const newMessage = JSON.parse(event.data);
-                updateState('messages', [...state.messages, newMessage]);
-            };
-
-            ws.onclose = () => {
-                console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
-                setTimeout(connectSocket, 3000);
-            };
-
-            socketRef.current = ws;
-            updateState('socket', ws);
-        };
-
-        if (!socketRef.current) {
-            connectSocket();
+    const connectSocket = (email) => {
+        if (socketRef.current) {
+            socketRef.current.close();
         }
 
-        return () => {
-            if (socketRef.current) {
-                socketRef.current.close();
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
+        const token = localStorage.getItem('authToken');
+
+        ws.onopen = () => {
+            console.log('WebSocket 연결이 열렸습니다.');
+            ws.send(JSON.stringify({ type: 'authenticate', token: token }));
+        };
+
+        // ws.onmessage = (event) => {
+        //     const newMessage = JSON.parse(event.data);
+        //     updateState('messages', (prevMessages) => [...prevMessages, newMessage]);
+        // };
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'authenticated') {
+                console.log('인증이 완료되었습니다.');
             }
         };
-    }, [state.messages]);
+
+        ws.onclose = () => {
+            console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
+            // setTimeout(() => connectSocket(email), 3000);
+        };
+
+        socketRef.current = ws;
+    };
+
+    const handleEmailClick = async (email) => {
+        updateState('selectedEmail', email);
+
+        try {
+            const response = await axiosInstance.get(`${API_URLS.CHAT}${email}/`);
+            updateState('messages', response.data.messages);
+            connectSocket(email);
+        } catch (error) {
+            console.error('대화 내용을 불러오는 데 실패했습니다:', error);
+        }
+    };
 
     const handleSendMessage = () => {
         if (!user) {
@@ -82,6 +94,7 @@ function Chat() {
             user: user.name,
             text: state.inputValue,
             timestamp: new Date().toLocaleTimeString(),
+            email: state.selectedEmail,
         };
 
         if (socketRef.current) {
@@ -96,19 +109,20 @@ function Chat() {
             <div className="chat-container">
                 <div className="chat-sidebar">
                     <div className="employee-list">
-                        {/* <h3>사원 정보</h3> */}
                         {state.employees.length > 0 ? (
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        {/* <th>아이디</th> */}
                                         <th>이메일</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {state.employees.map((employee) => (
-                                        <tr key={employee.username}>
-                                            {/* <td>{employee.username}</td> */}
+                                        <tr
+                                            key={employee.email} // username 대신 email 사용
+                                            onClick={() => handleEmailClick(employee.email)}
+                                            className={state.selectedEmail === employee.email ? 'selected' : ''}
+                                        >
                                             <td>{employee.email}</td>
                                         </tr>
                                     ))}
@@ -119,16 +133,15 @@ function Chat() {
                         )}
                     </div>
                 </div>
-                
-                {/* Main Chat Section */}
+
                 <div className="chat-main">
                     <div className="chat-window">
                         <div className="message-list">
-                            {state.messages.map((message) => (
-                                <div key={message.id} className="message-item">
+                            {state.messages.map((message, index) => (
+                                <div key={index} className="message-item">
                                     <span className="message-user">{message.user}:</span>
                                     <span className="message-text">{message.text}</span>
-                                    {/* <span className="message-timestamp">{message.timestamp}</span> */}
+                                    <span className="message-timestamp">{message.timestamp}</span>
                                 </div>
                             ))}
                         </div>

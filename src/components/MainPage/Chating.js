@@ -19,6 +19,7 @@ function Chat() {
     const updateState = (key, value) => {
         setState((prev) => ({ ...prev, [key]: value }));
     };
+    
 
     useEffect(() => {
         if (!user) {
@@ -27,7 +28,6 @@ function Chat() {
         }
 
         const fetchEmployees = async () => {
-    
             try {
                 const response = await axiosInstance.get(API_URLS.USER);
                 const filteredEmployees = response.data.data.filter(employee => employee.email !== user.email);
@@ -44,35 +44,58 @@ function Chat() {
         if (!user) {
             updateState('messages', []);
         }
-        
     }, [user]);
 
-    const connectSocket = (email) => {
+    useEffect(() => {
+        console.log("messages 상태가 변경되었습니다:", state.messages);
+    }, [state.messages]);
+
+
+    // 추가분
+    useEffect(() => {
+        if (!user) return;
+    
         if (socketRef.current) {
             socketRef.current.close();
         }
-
+    
         const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
-        const token = localStorage.getItem('authToken');
-
+    
         ws.onopen = () => {
             console.log('WebSocket 연결이 열렸습니다.');
-            ws.send(JSON.stringify({ type: 'authenticate', token: token }));
         };
-
+    
         ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === 'authenticated') {
-                console.log('인증이 완료되었습니다.');
+            try {
+                const data = JSON.parse(event.data);
+                console.log("WebSocket에서 받은 데이터:", data);
+    
+                if (data.message) {
+                    setState((prev) => ({
+                        ...prev,
+                        messages: [...prev.messages, data.message],
+                    }));
+                }
+            } catch (error) {
+                console.error("WebSocket 메시지 처리 중 오류 발생:", error);
             }
         };
-
+    
         ws.onclose = () => {
-            console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
+            console.log('WebSocket 연결이 닫혔습니다.');
         };
-
+    
         socketRef.current = ws;
-    };
+    
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.close();
+            }
+        };
+    }, [user]);
+
+
+
 
     const handleEmailClick = async (email) => {
         updateState('selectedEmail', email); // 선택한 이메일 주소
@@ -85,7 +108,6 @@ function Chat() {
                 otherEmail: email,
             });
             updateState('messages', response.data.messages);
-            console.log(response.data.messages)
             connectSocket(email);
         } catch (error) {
             console.error('대화 내용을 불러오는 데 실패했습니다:', error);
@@ -104,7 +126,8 @@ function Chat() {
             user: user.name,
             text: state.inputValue,
             timestamp: new Date().toLocaleTimeString(),
-            email: state.selectedEmail,
+            receiver_email: state.selectedEmail,
+            sender_email: user.email,
         };
 
         if (socketRef.current) {
@@ -126,7 +149,6 @@ function Chat() {
     
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
-
 
     return (
         <div className="grid-item Chating">
@@ -161,23 +183,22 @@ function Chat() {
                 <div className="chat-main">
                     <div className="chat-window">
                         <div className="message-list">
-                        {user && user.email && state.messages && state.messages.length > 0 ? (
-                            state.messages.map((message, index) => (
-                                <div 
-                                    key={index} 
-                                    className={`message-item ${message.sender_email === user.email ? 'my-message' : 'other-message'}`}
-                                >
-                                    <span className="message-user">{message.sender_email}:</span>
-                                    <span className="message-text">{message.text}</span>
-                                    <span className="message-timestamp">
-                                        {message.timestamp ? formatTimestamp(message.timestamp) : '시간 없음'}
-                                    </span>
-                                </div>
-                            ))
-                        ) : (
-                            <p>{user ? '메시지가 없습니다.' : '로그인 후 메시지를 확인할 수 있습니다.'}</p>
-                        )}
-
+                            {Array.isArray(state.messages) && state.messages.length > 0 ? (
+                                state.messages.map((message, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={`message-item ${message.sender_email === user.email ? 'my-message' : 'other-message'}`}
+                                    >
+                                        <span className="message-user">{message.sender_email}:</span>
+                                        <span className="message-text">{message.text}</span>
+                                        <span className="message-timestamp">
+                                            {message.timestamp ? formatTimestamp(message.timestamp) : '시간 없음'}
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>{user ? '메시지가 없습니다.' : '로그인 후 메시지를 확인할 수 있습니다.'}</p>
+                            )}
                         </div>
                         <div className="chat-input">
                             <input

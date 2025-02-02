@@ -21,11 +21,12 @@ function Chat() {
     };
 
     useEffect(() => {
+        if (!user) {
+            updateState('employees', []);
+            return;
+        }
+
         const fetchEmployees = async () => {
-            if (!user) {
-                updateState('employees', []);
-                return;
-            }
     
             try {
                 const response = await axiosInstance.get(API_URLS.USER);
@@ -37,6 +38,13 @@ function Chat() {
         };
     
         fetchEmployees();
+    }, [user]);
+
+    useEffect(() => { // 로그아웃을 진행했을때
+        if (!user) {
+            updateState('messages', []);
+        }
+        
     }, [user]);
 
     const connectSocket = (email) => {
@@ -116,7 +124,6 @@ function Chat() {
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const seconds = String(date.getSeconds()).padStart(2, '0');
     
-        // 원하는 형식: yyyy-mm-dd HH:mm:ss
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
 
@@ -154,13 +161,23 @@ function Chat() {
                 <div className="chat-main">
                     <div className="chat-window">
                         <div className="message-list">
-                            {state.messages.map((message, index) => (
-                                <div key={index} className={`message-item ${message.sender_email === user.email ? 'my-message' : 'other-message'}`}>
+                        {user && user.email && state.messages && state.messages.length > 0 ? (
+                            state.messages.map((message, index) => (
+                                <div 
+                                    key={index} 
+                                    className={`message-item ${message.sender_email === user.email ? 'my-message' : 'other-message'}`}
+                                >
                                     <span className="message-user">{message.sender_email}:</span>
                                     <span className="message-text">{message.text}</span>
-                                    <span className="message-timestamp">{formatTimestamp(message.timestamp)}</span>
-                                </div>                                
-                            ))}
+                                    <span className="message-timestamp">
+                                        {message.timestamp ? formatTimestamp(message.timestamp) : '시간 없음'}
+                                    </span>
+                                </div>
+                            ))
+                        ) : (
+                            <p>{user ? '메시지가 없습니다.' : '로그인 후 메시지를 확인할 수 있습니다.'}</p>
+                        )}
+
                         </div>
                         <div className="chat-input">
                             <input

@@ -197,3 +197,48 @@
   padding: 8px;
   cursor: pointer;
 }
+
+/* .message-item은 기본적으로 메시지를 하나씩 나열합니다. */
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 각 메시지 사이 간격 */
+}
+
+.message-item {
+  max-width: 80%; /* 메시지의 최대 너비를 80%로 설정 */
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 내가 보낸 메시지는 오른쪽으로 배치 */
+.my-message {
+  background-color: #DCF8C6; /* 다른 색상으로 구분 */
+  align-self: flex-end; /* 오른쪽으로 정렬 */
+  text-align: right; /* 텍스트 오른쪽 정렬 */
+}
+
+/* 상대방이 보낸 메시지는 왼쪽으로 배치 */
+.other-message {
+  background-color: #FFFFFF;
+  align-self: flex-start; /* 왼쪽으로 정렬 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+/* 메시지의 사용자명, 시간, 텍스트 스타일 */
+.message-user {
+  font-weight: bold;
+}
+
+.message-text {
+  margin-top: 5px;
+}
+
+.message-timestamp {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 5px;
+}

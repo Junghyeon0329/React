@@ -26,17 +26,18 @@ function Chat() {
                 updateState('employees', []);
                 return;
             }
-
+    
             try {
                 const response = await axiosInstance.get(API_URLS.USER);
-                updateState('employees', response.data.data);
+                const filteredEmployees = response.data.data.filter(employee => employee.email !== user.email);
+                updateState('employees', filteredEmployees);
             } catch (error) {
                 console.error('사원 정보를 불러오는 데 실패했습니다:', error);
             }
         };
-
+    
         fetchEmployees();
-    }, [user]); 
+    }, [user]);
 
     const connectSocket = (email) => {
         if (socketRef.current) {
@@ -51,10 +52,6 @@ function Chat() {
             ws.send(JSON.stringify({ type: 'authenticate', token: token }));
         };
 
-        // ws.onmessage = (event) => {
-        //     const newMessage = JSON.parse(event.data);
-        //     updateState('messages', (prevMessages) => [...prevMessages, newMessage]);
-        // };
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.type === 'authenticated') {
@@ -64,18 +61,23 @@ function Chat() {
 
         ws.onclose = () => {
             console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
-            // setTimeout(() => connectSocket(email), 3000);
         };
 
         socketRef.current = ws;
     };
 
     const handleEmailClick = async (email) => {
-        updateState('selectedEmail', email);
-
+        updateState('selectedEmail', email); // 선택한 이메일 주소
+    
+        const myEmail = user.email; // 로그인한 사용자의 이메일 주소
+    
         try {
-            const response = await axiosInstance.get(`${API_URLS.CHAT}${email}/`);
+            const response = await axiosInstance.post(`${API_URLS.CHAT}`, {
+                myEmail: myEmail,
+                otherEmail: email,
+            });
             updateState('messages', response.data.messages);
+            console.log(response.data.messages)
             connectSocket(email);
         } catch (error) {
             console.error('대화 내용을 불러오는 데 실패했습니다:', error);
@@ -103,6 +105,21 @@ function Chat() {
 
         updateState('inputValue', ''); // 메시지 전송 후 입력창 초기화
     };
+
+    const formatTimestamp = (timestamp) => {
+        const date = new Date(timestamp);
+    
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 해줌
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+        // 원하는 형식: yyyy-mm-dd HH:mm:ss
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
 
     return (
         <div className="grid-item Chating">
@@ -138,11 +155,11 @@ function Chat() {
                     <div className="chat-window">
                         <div className="message-list">
                             {state.messages.map((message, index) => (
-                                <div key={index} className="message-item">
-                                    <span className="message-user">{message.user}:</span>
+                                <div key={index} className={`message-item ${message.sender_email === user.email ? 'my-message' : 'other-message'}`}>
+                                    <span className="message-user">{message.sender_email}:</span>
                                     <span className="message-text">{message.text}</span>
-                                    <span className="message-timestamp">{message.timestamp}</span>
-                                </div>
+                                    <span className="message-timestamp">{formatTimestamp(message.timestamp)}</span>
+                                </div>                                
                             ))}
                         </div>
                         <div className="chat-input">

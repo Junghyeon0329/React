@@ -96,6 +96,38 @@ function Chat() {
 
 
 
+    // const connectSocket = (email) => {
+    //     if (socketRef.current) {
+    //         socketRef.current.close();
+    //     }
+
+    //     const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
+
+    //     ws.onopen = () => {
+    //         console.log('WebSocket 연결이 열렸습니다.');
+    //     };
+
+    //     ws.onmessage = (event) => {
+    //         try {
+    //             const message = JSON.parse(event.data).message;        
+    //             if (message.receiver_email === user.email || message.sender_email === user.email) {                            
+    //                 setState((prev) => ({
+    //                     ...prev,
+    //                     messages: [...prev.messages, message],
+    //                 }));
+    //             }
+    //         } catch (error) {
+    //             console.log("WebSocket 메시지 처리 중 오류 발생:", error);
+    //         }
+    //     };
+        
+    //     ws.onclose = () => {
+    //         console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
+    //     };
+
+    //     socketRef.current = ws;
+    // };
+    
 
     const handleEmailClick = async (email) => {
         updateState('selectedEmail', email); // 선택한 이메일 주소

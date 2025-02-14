@@ -21,7 +21,6 @@ function Chat() {
         setState((prev) => ({ ...prev, [key]: value }));
     };
     
-
     useEffect(() => {
         if (!user) {
             updateState('employees', []);
@@ -41,55 +40,66 @@ function Chat() {
         fetchEmployees();
     }, [user]);
 
-    useEffect(() => { // 로그아웃을 진행했을때
-        if (!user) {
-            updateState('messages', []);
-        }
-    }, [user]);
-
-    useEffect(() => {
-        console.log("messages 상태가 변경되었습니다:", state.messages);
-    }, [state.messages]);
-
     useEffect(() => {
         if (!user) return;
     
         if (socketRef.current) {
             socketRef.current.close();
         }
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/?token=${localStorage.getItem("authToken")}`);
     
-        const token = localStorage.getItem("authToken");
-        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/?token=${token}`);
-    
-        ws.onopen = () => {
-            console.log('WebSocket 연결이 열렸습니다.');
-        };
-        ws.onerror = (error) => {
-            console.error('webSocket 오류 발생:', error);
-        };
+        // ws.onopen = () => {
+        //     console.log('WebSocket 연결이 열렸습니다.');
+        // };
+        // ws.onerror = (error) => {
+        //     console.error('webSocket 오류 발생:', error);
+        // }; 
+        // ws.onclose = (event) => {
+        //     console.log("WebSocket 연결이 닫혔습니다.", event);
+        // };
     
         ws.onmessage = (event) => {
-            console.log("onmessage 이벤트 실행됨");
             try {
                 const message = JSON.parse(event.data).message;
                 console.log("받은 메시지:", message);
-        
-                // 메시지 처리
-                if (message.receiver_email === user.email || message.sender_email === user.email) {
+
+                // if (message.receiver_email === user.email || message.sender_email === user.email) {
+                //     setState((prev) => ({
+                //         ...prev,
+                //         messages: [...prev.messages, message],
+                //     }));
+    
+                //     // 만약 사용자가 오프라인 상태이면 알림 수를 업데이트
+                //     if (message.receiver_email !== user.email && state.selectedEmail !== message.sender_email) {
+                //         setState((prev) => ({
+                //             ...prev,
+                //             unreadMessages: {
+                //                 ...prev.unreadMessages,
+                //                 [message.sender_email]: (prev.unreadMessages[message.sender_email] || 0) + 1,
+                //             },
+                //         }));
+                //     }
+                // }
+                if (message.receiver_email === state.selectedEmail || message.sender_email === state.selectedEmail) {
                     setState((prev) => ({
                         ...prev,
                         messages: [...prev.messages, message],
                     }));
                 }
+                if (message.receiver_email !== user.email && state.selectedEmail !== message.sender_email) {
+                    setState((prev) => ({
+                        ...prev,
+                        unreadMessages: {
+                            ...prev.unreadMessages,
+                            [message.sender_email]: (prev.unreadMessages[message.sender_email] || 0) + 1,
+                        },
+                    }));
+                }
+
             } catch (error) {
                 console.error("WebSocket 메시지 처리 중 오류 발생:", error);
             }
-        };        
-    
-        ws.onclose = (event) => {
-            console.log("🔴 WebSocket 연결이 닫혔습니다.", event);
-        };
-    
+        };            
         socketRef.current = ws;
     
         return () => {
@@ -104,18 +114,18 @@ function Chat() {
             socketRef.current.close();
         }
 
-        const token = localStorage.getItem("authToken");
-        console.log("token:", token)
-        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/?token=${token}`);
-        // const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/?token=${localStorage.getItem("authToken")}`);
 
-        ws.onopen = () => {
-            console.log('WebSocket 연결이 열렸습니다.');
-        };
+        // ws.onopen = () => {
+        //     console.log('WebSocket 연결이 열렸습니다.');
+        // };
+        // ws.onclose = () => {
+        //     console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
+        // };
 
         ws.onmessage = (event) => {
             try {
-                const message = JSON.parse(event.data).message;        
+                const message = JSON.parse(event.data).message;
                 if (message.receiver_email === user.email || message.sender_email === user.email) {                            
                     setState((prev) => ({
                         ...prev,
@@ -126,22 +136,16 @@ function Chat() {
                 console.log("WebSocket 메시지 처리 중 오류 발생:", error);
             }
         };
-        
-        ws.onclose = () => {
-            console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
-        };
-
         socketRef.current = ws;
     };
 
     const handleEmailClick = async (email) => {
         updateState('selectedEmail', email); // 선택한 이메일 주소
-    
-        const myEmail = user.email; // 로그인한 사용자의 이메일 주소
+        updateState('unreadMessages', { ...state.unreadMessages, [email]: 0 }); // 선택된 이메일의 알림 수 초기화
     
         try {
             const response = await axiosInstance.post(`${API_URLS.CHAT}`, {
-                myEmail: myEmail,
+                myEmail: user.email,
                 otherEmail: email,
             });
             updateState('messages', response.data.messages);
@@ -206,7 +210,14 @@ function Chat() {
                                             onClick={() => handleEmailClick(employee.email)}
                                             className={state.selectedEmail === employee.email ? 'selected' : ''}
                                         >
-                                            <td>{employee.email}</td>
+                                             <td>
+                                                {employee.email}
+                                                {state.unreadMessages[employee.email] > 0 && (
+                                                    <span className="notification-badge">
+                                                        {state.unreadMessages[employee.email]}
+                                                    </span>
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

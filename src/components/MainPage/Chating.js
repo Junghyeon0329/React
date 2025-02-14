@@ -12,6 +12,7 @@ function Chat() {
         socket: null,
         employees: [],        
         selectedEmail: null,
+        unreadMessages: {},
     });
 
     const socketRef = useRef(null);
@@ -50,8 +51,6 @@ function Chat() {
         console.log("messages 상태가 변경되었습니다:", state.messages);
     }, [state.messages]);
 
-
-    // 추가분
     useEffect(() => {
         if (!user) return;
     
@@ -59,30 +58,36 @@ function Chat() {
             socketRef.current.close();
         }
     
-        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
+        const token = localStorage.getItem("authToken");
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/?token=${token}`);
     
         ws.onopen = () => {
             console.log('WebSocket 연결이 열렸습니다.');
         };
+        ws.onerror = (error) => {
+            console.error('webSocket 오류 발생:', error);
+        };
     
         ws.onmessage = (event) => {
+            console.log("onmessage 이벤트 실행됨");
             try {
-                const data = JSON.parse(event.data);
-                console.log("WebSocket에서 받은 데이터:", data);
-    
-                if (data.message) {
+                const message = JSON.parse(event.data).message;
+                console.log("받은 메시지:", message);
+        
+                // 메시지 처리
+                if (message.receiver_email === user.email || message.sender_email === user.email) {
                     setState((prev) => ({
                         ...prev,
-                        messages: [...prev.messages, data.message],
+                        messages: [...prev.messages, message],
                     }));
                 }
             } catch (error) {
                 console.error("WebSocket 메시지 처리 중 오류 발생:", error);
             }
-        };
+        };        
     
-        ws.onclose = () => {
-            console.log('WebSocket 연결이 닫혔습니다.');
+        ws.onclose = (event) => {
+            console.log("🔴 WebSocket 연결이 닫혔습니다.", event);
         };
     
         socketRef.current = ws;
@@ -94,40 +99,40 @@ function Chat() {
         };
     }, [user]);
 
+    const connectSocket = (email) => {
+        if (socketRef.current) {
+            socketRef.current.close();
+        }
 
+        const token = localStorage.getItem("authToken");
+        console.log("token:", token)
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/?token=${token}`);
+        // const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
 
-    // const connectSocket = (email) => {
-    //     if (socketRef.current) {
-    //         socketRef.current.close();
-    //     }
+        ws.onopen = () => {
+            console.log('WebSocket 연결이 열렸습니다.');
+        };
 
-    //     const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
-
-    //     ws.onopen = () => {
-    //         console.log('WebSocket 연결이 열렸습니다.');
-    //     };
-
-    //     ws.onmessage = (event) => {
-    //         try {
-    //             const message = JSON.parse(event.data).message;        
-    //             if (message.receiver_email === user.email || message.sender_email === user.email) {                            
-    //                 setState((prev) => ({
-    //                     ...prev,
-    //                     messages: [...prev.messages, message],
-    //                 }));
-    //             }
-    //         } catch (error) {
-    //             console.log("WebSocket 메시지 처리 중 오류 발생:", error);
-    //         }
-    //     };
+        ws.onmessage = (event) => {
+            try {
+                const message = JSON.parse(event.data).message;        
+                if (message.receiver_email === user.email || message.sender_email === user.email) {                            
+                    setState((prev) => ({
+                        ...prev,
+                        messages: [...prev.messages, message],
+                    }));
+                }
+            } catch (error) {
+                console.log("WebSocket 메시지 처리 중 오류 발생:", error);
+            }
+        };
         
-    //     ws.onclose = () => {
-    //         console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
-    //     };
+        ws.onclose = () => {
+            console.log('WebSocket 연결이 닫혔습니다. 다시 시도합니다.');
+        };
 
-    //     socketRef.current = ws;
-    // };
-    
+        socketRef.current = ws;
+    };
 
     const handleEmailClick = async (email) => {
         updateState('selectedEmail', email); // 선택한 이메일 주소

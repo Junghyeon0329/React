@@ -24,6 +24,7 @@ function Chat() {
     useEffect(() => {
         if (!user) {
             updateState('employees', []);
+            updateState('selectedEmail', null);
             return;
         }
 
@@ -38,75 +39,6 @@ function Chat() {
         };
     
         fetchEmployees();
-    }, [user]);
-
-    useEffect(() => {
-        if (!user) return;
-    
-        if (socketRef.current) {
-            socketRef.current.close();
-        }
-        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/chat/?token=${localStorage.getItem("authToken")}`);
-    
-        // ws.onopen = () => {
-        //     console.log('WebSocket 연결이 열렸습니다.');
-        // };
-        // ws.onerror = (error) => {
-        //     console.error('webSocket 오류 발생:', error);
-        // }; 
-        // ws.onclose = (event) => {
-        //     console.log("WebSocket 연결이 닫혔습니다.", event);
-        // };
-    
-        ws.onmessage = (event) => {
-            try {
-                const message = JSON.parse(event.data).message;
-                console.log("받은 메시지:", message);
-
-                // if (message.receiver_email === user.email || message.sender_email === user.email) {
-                //     setState((prev) => ({
-                //         ...prev,
-                //         messages: [...prev.messages, message],
-                //     }));
-    
-                //     // 만약 사용자가 오프라인 상태이면 알림 수를 업데이트
-                //     if (message.receiver_email !== user.email && state.selectedEmail !== message.sender_email) {
-                //         setState((prev) => ({
-                //             ...prev,
-                //             unreadMessages: {
-                //                 ...prev.unreadMessages,
-                //                 [message.sender_email]: (prev.unreadMessages[message.sender_email] || 0) + 1,
-                //             },
-                //         }));
-                //     }
-                // }
-                if (message.receiver_email === state.selectedEmail || message.sender_email === state.selectedEmail) {
-                    setState((prev) => ({
-                        ...prev,
-                        messages: [...prev.messages, message],
-                    }));
-                }
-                if (message.receiver_email !== user.email && state.selectedEmail !== message.sender_email) {
-                    setState((prev) => ({
-                        ...prev,
-                        unreadMessages: {
-                            ...prev.unreadMessages,
-                            [message.sender_email]: (prev.unreadMessages[message.sender_email] || 0) + 1,
-                        },
-                    }));
-                }
-
-            } catch (error) {
-                console.error("WebSocket 메시지 처리 중 오류 발생:", error);
-            }
-        };            
-        socketRef.current = ws;
-    
-        return () => {
-            if (socketRef.current) {
-                socketRef.current.close();
-            }
-        };
     }, [user]);
 
     const connectSocket = (email) => {
@@ -127,10 +59,12 @@ function Chat() {
             try {
                 const message = JSON.parse(event.data).message;
                 console.log("받은 메시지2:", message);
+
                 console.log(message.receiver_email) //admin
-                console.log(user.email) // admin
+                console.log(user.email) //admin
                 console.log(state.selectedEmail) //test2
                 console.log(message.sender_email) //test
+
                 if (message.receiver_email === user.email && state.selectedEmail !== message.sender_email) {
                     setState((prev) => ({
                         ...prev,
@@ -141,7 +75,7 @@ function Chat() {
                     }));
                 }
 
-                if (message.receiver_email === user.email && message.sender_email === user.email) {                            
+                if (message.receiver_email === user.email || message.sender_email === user.email) {                            
                     setState((prev) => ({
                         ...prev,
                         messages: [...prev.messages, message],
@@ -245,7 +179,7 @@ function Chat() {
 
                 <div className="chat-main">
                 <div className="selected-email">
-                    {state.selectedEmail && <h3>{state.selectedEmail}</h3>}
+                    {state.selectedEmail ? <h3>{state.selectedEmail}</h3> : <h3>채팅방을 선택하세요</h3>}
                 </div>
                     <div className="chat-window">
                         <div className="message-list">
@@ -253,7 +187,7 @@ function Chat() {
                                 state.messages.map((message, index) => (
                                     <div 
                                         key={index} 
-                                        className={`message-item ${message.sender_email === user.email ? 'my-message' : 'other-message'}`}
+                                        className={`message-item ${message.sender_email === user?.email ? 'my-message' : 'other-message'}`}
                                     >
                                         <span className="message-user">{message.sender_email}:</span>
                                         <span className="message-text">{message.text}</span>

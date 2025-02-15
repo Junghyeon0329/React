@@ -82,7 +82,7 @@
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 350px;
+  height: 310px;
   padding: 20px;
   background-color: transparent;
   transition: background-color 0.3s; 
@@ -96,7 +96,8 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   min-width: 400px;
-  min-height: 270px;
+  min-height: 250px;
+  max-height: 200px;
 }
 
 .message-item {
@@ -250,4 +251,13 @@
   padding: 0.2rem 0.5rem;
   font-size: 0.8rem;
   margin-left: 0.5rem;
+}
+
+.selected-email {
+  
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-size: 16px;
+  color: #333;
 }

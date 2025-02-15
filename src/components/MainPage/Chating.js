@@ -126,7 +126,22 @@ function Chat() {
         ws.onmessage = (event) => {
             try {
                 const message = JSON.parse(event.data).message;
-                if (message.receiver_email === user.email || message.sender_email === user.email) {                            
+                console.log("받은 메시지2:", message);
+                console.log(message.receiver_email) //admin
+                console.log(user.email) // admin
+                console.log(state.selectedEmail) //test2
+                console.log(message.sender_email) //test
+                if (message.receiver_email === user.email && state.selectedEmail !== message.sender_email) {
+                    setState((prev) => ({
+                        ...prev,
+                        unreadMessages: {
+                            ...prev.unreadMessages,
+                            [message.sender_email]: (prev.unreadMessages[message.sender_email] || 0) + 1,
+                        },
+                    }));
+                }
+
+                if (message.receiver_email === user.email && message.sender_email === user.email) {                            
                     setState((prev) => ({
                         ...prev,
                         messages: [...prev.messages, message],
@@ -229,6 +244,9 @@ function Chat() {
                 </div>
 
                 <div className="chat-main">
+                <div className="selected-email">
+                    {state.selectedEmail && <h3>{state.selectedEmail}</h3>}
+                </div>
                     <div className="chat-window">
                         <div className="message-list">
                             {Array.isArray(state.messages) && state.messages.length > 0 ? (

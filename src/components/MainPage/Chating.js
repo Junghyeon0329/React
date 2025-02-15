@@ -16,11 +16,22 @@ function Chat() {
     });
 
     const socketRef = useRef(null);
+    const messagesEndRef = useRef(null); // 마지막 메시지 div를 가리킬 ref 생성
+    const messageListRef = useRef(null); // message-list를 참조하는 ref 생성
 
     const updateState = (key, value) => {
         setState((prev) => ({ ...prev, [key]: value }));
     };
     
+    // 채팅창 제일 마지막으로 위치
+    useEffect(() => {
+        
+        if (messagesEndRef.current) {            
+            // messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+        }
+    }, [state.messages]);
+
     useEffect(() => {
         if (!user) {
             updateState('employees', []);
@@ -60,12 +71,22 @@ function Chat() {
                 const message = JSON.parse(event.data).message;
                 console.log("받은 메시지2:", message);
 
-                console.log(message.receiver_email) //admin
-                console.log(user.email) //admin
-                console.log(state.selectedEmail) //test2
-                console.log(message.sender_email) //test
+                console.log(message.receiver_email) //받는 사람(admin)
+                console.log(message.sender_email) //보내는 사람(test)
 
-                if (message.receiver_email === user.email && state.selectedEmail !== message.sender_email) {
+                console.log(user.email) //나(admin)
+                console.log(state.selectedEmail) //선택한 채팅방(test2)
+                
+                if(message.sender_email === user.email){
+                    console.log("(1)")
+                    setState((prev) => ({
+                        ...prev,
+                        messages: [...prev.messages, message],
+                    }));
+                }
+                
+                else if (message.receiver_email === user.email && state.selectedEmail !== message.sender_email) {
+                    console.log("(2)")
                     setState((prev) => ({
                         ...prev,
                         unreadMessages: {
@@ -74,13 +95,15 @@ function Chat() {
                         },
                     }));
                 }
-
-                if (message.receiver_email === user.email || message.sender_email === user.email) {                            
+                
+                else if (message.receiver_email === user.email && message.sender_email === user.email) {                            
+                    console.log("(3)")
                     setState((prev) => ({
                         ...prev,
                         messages: [...prev.messages, message],
                     }));
                 }
+
             } catch (error) {
                 console.log("WebSocket 메시지 처리 중 오류 발생:", error);
             }
@@ -182,7 +205,7 @@ function Chat() {
                     {state.selectedEmail ? <h3>{state.selectedEmail}</h3> : <h3>채팅방을 선택하세요</h3>}
                 </div>
                     <div className="chat-window">
-                        <div className="message-list">
+                        <div className="message-list" ref={messageListRef}>
                             {Array.isArray(state.messages) && state.messages.length > 0 ? (
                                 state.messages.map((message, index) => (
                                     <div 
@@ -199,6 +222,7 @@ function Chat() {
                             ) : (
                                 <p>{user ? '메시지가 없습니다.' : '로그인 후 메시지를 확인할 수 있습니다.'}</p>
                             )}
+                            <div ref={messagesEndRef} />
                         </div>
                         <div className="chat-input">
                             <input

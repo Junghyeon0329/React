@@ -34,12 +34,12 @@ function Chat() {
 
     useEffect(() => {
         selectedEmailRef.current = state.selectedEmail;
-
     }, [state.selectedEmail]);
 
     useEffect(() => {
         if (!user) {
             updateState('employees', []);
+            updateState('messages', []);
             updateState('selectedEmail', null);
             return;
         }
@@ -54,9 +54,36 @@ function Chat() {
                 console.error('사원 정보를 불러오는 데 실패했습니다:', error);
             }
         };
+
+        const fetchMessages = async () => {
+            try {
+                const response = await axiosInstance.get(`${API_URLS.CHAT}?myEmail=${user.email}`);
+                                
+                if (response.data.messages) {
+                    console.log(response.data.messages);
+                
+                    const newUnreadMessages = { ...state.unreadMessages };
+                
+                    response.data.messages.forEach((message) => {
+                        if (message.sender_email !== user.email) {
+                            newUnreadMessages[message.sender_email] = (newUnreadMessages[message.sender_email] || 0) + 1;
+                        }
+                    });
+                
+                    setState((prev) => ({
+                        ...prev,
+                        unreadMessages: newUnreadMessages,
+                    }));
+                }            
+
+            } catch (error) {
+                console.error('메시지 불러오기 실패:', error);
+            }
+        };
     
         fetchEmployees();
-    }, [user]);
+        if (user) fetchMessages();
+    }, [user, state.unreadMessages]);
 
     const connectSocket = (email) => {
         if (socketRef.current) {
@@ -75,8 +102,8 @@ function Chat() {
         ws.onmessage = (event) => {
             try {
                 const message = JSON.parse(event.data).message;
-                state.selectedEmail = email // 비동기 형식으로 변경되는 값을 직접 변경
-                                
+                updateState('selectedEmail', email); // 비동기 형식으로 변경되는 값을 직접 변경
+                // console.log("받은 메세지 :", message)
                 if(message.sender_email === user.email){
                     
                     setState((prev) => ({
@@ -86,7 +113,7 @@ function Chat() {
                 }
                 
                 else if (message.receiver_email === user.email && state.selectedEmail !== message.sender_email) {
-                    
+                
                     setState((prev) => ({
                         ...prev,
                         unreadMessages: {
@@ -114,7 +141,12 @@ function Chat() {
     const handleEmailClick = async (email) => {
     
         updateState('selectedEmail', email); // 선택한 이메일 주소
-        updateState('unreadMessages', { ...state.unreadMessages, [email]: 0 }); // 선택된 이메일의 알림 수 초기화
+        // updateState('unreadMessages', { ...state.unreadMessages, [email]: 0 }); // 선택된 이메일의 알림 수 초기화
+        setState((prev) => {
+            const newUnreadMessages = { ...prev.unreadMessages };
+            delete newUnreadMessages[email];
+            return { ...prev, unreadMessages: newUnreadMessages };
+        });
     
         try {
             const response = await axiosInstance.post(`${API_URLS.CHAT}`, {
@@ -184,7 +216,7 @@ function Chat() {
                                             className={state.selectedEmail === employee.email ? 'selected' : ''}
                                         >
                                              <td>
-                                                {employee.email}
+                                                {employee.email}                                            
                                                 {state.unreadMessages[employee.email] > 0 && (
                                                     <span className="notification-badge">
                                                         {state.unreadMessages[employee.email]}

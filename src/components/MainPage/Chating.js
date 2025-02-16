@@ -18,6 +18,7 @@ function Chat() {
     const socketRef = useRef(null);
     const messagesEndRef = useRef(null); // 마지막 메시지 div를 가리킬 ref 생성
     const messageListRef = useRef(null); // message-list를 참조하는 ref 생성
+    const selectedEmailRef = useRef(state.selectedEmail);
 
     const updateState = (key, value) => {
         setState((prev) => ({ ...prev, [key]: value }));
@@ -25,12 +26,16 @@ function Chat() {
     
     // 채팅창 제일 마지막으로 위치
     useEffect(() => {
-        
         if (messagesEndRef.current) {            
             // messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
             messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
         }
     }, [state.messages]);
+
+    useEffect(() => {
+        selectedEmailRef.current = state.selectedEmail;
+
+    }, [state.selectedEmail]);
 
     useEffect(() => {
         if (!user) {
@@ -44,6 +49,7 @@ function Chat() {
                 const response = await axiosInstance.get(API_URLS.USER);
                 const filteredEmployees = response.data.data.filter(employee => employee.email !== user.email);
                 updateState('employees', filteredEmployees);
+                // connectSocket(email);
             } catch (error) {
                 console.error('사원 정보를 불러오는 데 실패했습니다:', error);
             }
@@ -69,16 +75,10 @@ function Chat() {
         ws.onmessage = (event) => {
             try {
                 const message = JSON.parse(event.data).message;
-                console.log("받은 메시지2:", message);
-
-                console.log(message.receiver_email) //받는 사람(admin)
-                console.log(message.sender_email) //보내는 사람(test)
-
-                console.log(user.email) //나(admin)
-                console.log(state.selectedEmail) //선택한 채팅방(test2)
-                
+                state.selectedEmail = email // 비동기 형식으로 변경되는 값을 직접 변경
+                                
                 if(message.sender_email === user.email){
-                    console.log("(1)")
+                    
                     setState((prev) => ({
                         ...prev,
                         messages: [...prev.messages, message],
@@ -86,7 +86,7 @@ function Chat() {
                 }
                 
                 else if (message.receiver_email === user.email && state.selectedEmail !== message.sender_email) {
-                    console.log("(2)")
+                    
                     setState((prev) => ({
                         ...prev,
                         unreadMessages: {
@@ -97,7 +97,7 @@ function Chat() {
                 }
                 
                 else if (message.receiver_email === user.email && message.sender_email === user.email) {                            
-                    console.log("(3)")
+                    
                     setState((prev) => ({
                         ...prev,
                         messages: [...prev.messages, message],
@@ -112,6 +112,7 @@ function Chat() {
     };
 
     const handleEmailClick = async (email) => {
+    
         updateState('selectedEmail', email); // 선택한 이메일 주소
         updateState('unreadMessages', { ...state.unreadMessages, [email]: 0 }); // 선택된 이메일의 알림 수 초기화
     

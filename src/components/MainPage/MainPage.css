@@ -118,6 +118,19 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 }
 
+.ClockTimer {
+    grid-column: 3;
+    grid-row: 3 / 4;
+    min-height: 295px;
+    max-height: 300px;
+    min-width: 350px; 
+    max-width: 360px; 
+    width: 95%;
+    border: 2px solid #ccc; /* 두께 2px, 색상은 연한 회색 */
+    border-radius: 8px; /* 둥근 테두리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
 
 /* 푸터 */
 .Footer {

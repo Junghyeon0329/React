@@ -5,6 +5,7 @@ import Announce from './Announce';
 import Chating from './Chating'
 import Calendar from './Calendar';
 import DownloadPaper from './DownloadPaper';
+import ClockTimer from './ClockTimer';
 import ErrorBoundary from '../ErrorBoundary';
 
 function MainPage() {
@@ -21,6 +22,7 @@ function MainPage() {
             <Chating />
             <Calendar />
             <DownloadPaper />
+            <ClockTimer />
             
         </div>
       </ErrorBoundary>

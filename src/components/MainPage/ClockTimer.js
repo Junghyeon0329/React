@@ -18,12 +18,32 @@ function ClockTimer() {
     return () => clearInterval(interval);
   }, []);
 
+  const timeInTimezoneStr = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).format(time);
+
+  const [month, day, year, hour, minute, second] = timeInTimezoneStr
+    .match(/\d+/g)
+    .map(Number);
+  const timeInTimezone = new Date(year, month - 1, day, hour, minute, second);
+
+  const hourDeg = (timeInTimezone.getHours() % 12) * 30 + timeInTimezone.getMinutes() * 0.5;
+  const minuteDeg = timeInTimezone.getMinutes() * 6;
+  const secondDeg = timeInTimezone.getSeconds() * 6;
+
   const localTime = new Intl.DateTimeFormat("en-US", {
     timeZone: timezone,
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: false,
+    hour12: true,
   }).format(time);
 
   return (
@@ -41,18 +61,9 @@ function ClockTimer() {
         </div>
         <div className="clock-container">
           <div className="clock">
-            <div
-              className="hand hour-hand"
-              style={{ transform: `rotate(${time.getHours() * 30 + time.getMinutes() * 0.5}deg)` }}
-            />
-            <div
-              className="hand minute-hand"
-              style={{ transform: `rotate(${time.getMinutes() * 6}deg)` }}
-            />
-            <div
-              className="hand second-hand"
-              style={{ transform: `rotate(${time.getSeconds() * 6}deg)` }}
-            />
+            <div className="hand hour-hand" style={{ transform: `rotate(${hourDeg}deg)` }} />
+            <div className="hand minute-hand" style={{ transform: `rotate(${minuteDeg}deg)` }} />
+            <div className="hand second-hand" style={{ transform: `rotate(${secondDeg}deg)` }} />
           </div>
           <div className="time-display">{localTime}</div>
         </div>

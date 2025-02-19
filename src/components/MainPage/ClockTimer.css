@@ -1,0 +1,83 @@
+.ClockTimer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .calendar-title h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .clock-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .timezone-buttons {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+  }
+  
+  .clock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .clock {
+    width: 150px;
+    height: 150px;
+    border: 5px solid black;
+    border-radius: 50%;
+    position: relative;
+  }
+  
+  .hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom;
+    background: black;
+  }
+  
+  .hour-hand {
+    width: 4px;
+    height: 40px;
+  }
+  
+  .minute-hand {
+    width: 3px;
+    height: 50px;
+    background: gray;
+  }
+  
+  .second-hand {
+    width: 2px;
+    height: 60px;
+    background: red;
+  }
+  
+  .timezone-buttons button {
+    margin: 5px 0;
+    padding: 10px;
+    background: lightgray;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .timezone-buttons button:hover {
+    background: darkgray;
+  }
+  
+  .time-display {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  

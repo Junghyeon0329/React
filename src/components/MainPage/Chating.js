@@ -59,22 +59,22 @@ function Chat() {
             try {
                 const response = await axiosInstance.get(`${API_URLS.CHAT}?myEmail=${user.email}`);
                                 
-                if (response.data.messages) {
-                    console.log(response.data.messages);
-                
-                    const newUnreadMessages = { ...state.unreadMessages };
-                
-                    response.data.messages.forEach((message) => {
-                        if (message.sender_email !== user.email) {
-                            newUnreadMessages[message.sender_email] = (newUnreadMessages[message.sender_email] || 0) + 1;
-                        }
+                if (response.data.messages) {                
+                    setState(prevState => {
+                        const newUnreadMessages = { ...prevState.unreadMessages };
+    
+                        response.data.messages.forEach((message) => {
+                            if (message.sender_email !== user.email) {
+                                newUnreadMessages[message.sender_email] = (newUnreadMessages[message.sender_email] || 0) + 1;
+                            }
+                        });
+    
+                        return {
+                            ...prevState,
+                            unreadMessages: newUnreadMessages,
+                        };
                     });
-                
-                    setState((prev) => ({
-                        ...prev,
-                        unreadMessages: newUnreadMessages,
-                    }));
-                }            
+                }           
 
             } catch (error) {
                 console.error('메시지 불러오기 실패:', error);
@@ -83,7 +83,7 @@ function Chat() {
     
         fetchEmployees();
         if (user) fetchMessages();
-    }, [user, state.unreadMessages]);
+    }, [user]);
 
     const connectSocket = (email) => {
         if (socketRef.current) {
@@ -263,7 +263,12 @@ function Chat() {
                                 placeholder="메시지를 입력하세요..."
                                 value={state.inputValue}
                                 onChange={(e) => updateState('inputValue', e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleSendMessage();
+                                    }
+                                }}
                             />
                             <button onClick={handleSendMessage}>전송</button>
                         </div>

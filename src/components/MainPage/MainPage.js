@@ -16,15 +16,12 @@ function MainPage() {
       </header>
 
       <ErrorBoundary>
-        <div className="grid-container">
-            <Announce />
-            <Login />
-            <Chating />
-            <Calendar />
-            <DownloadPaper />
-            <ClockTimer />
-            
-        </div>
+        <Announce />
+        <Login />
+        <Chating />
+        <Calendar />
+        <DownloadPaper />
+        <ClockTimer />
       </ErrorBoundary>
 
       <footer className="Footer">

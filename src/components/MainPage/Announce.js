@@ -31,10 +31,11 @@ function Announce() {
 
 	const fetchAnnouncements = useCallback(async (page, query = '') => {
 		try {
+			
 			const response = await axiosInstance.get(API_URLS.NOTICE, {
 				params: { page, query } // 검색어가 있으면 포함
 			});
-	
+			
 			if (!response.data.results || response.data.results.length === 0) {
 				updateState('announcements', [{ title: "내용 없음", description: "공지사항이 없습니다." }]);
 			} else {

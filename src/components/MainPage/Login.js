@@ -41,7 +41,8 @@ function Login() {
 	
 		try {
 		  const response = await axios.post(API_URLS.LOGIN, { email, password });
-		  const { access, refresh, user } = response.data;
+		  console.log(response)
+		  const { access, refresh, user } = response.data.message;
 		  if (!access || !refresh) {
 			throw new Error('Access token or refresh token missing');
 		  }

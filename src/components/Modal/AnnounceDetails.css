@@ -1,0 +1,7 @@
+.content-field {
+  text-align: left;
+  min-height: 100px;
+  max-height: 300px;
+  overflow-y: auto;
+  flex-grow: 1;
+}

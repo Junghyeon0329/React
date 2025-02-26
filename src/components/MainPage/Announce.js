@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../../api/axiosInstance';
+import axios from 'axios';
 import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
 import './Announce.css';
-import InformModal from '../Modal/InformModal';
+// import InformModal from '../Modal/InformModal';
 import AccountModal from '../Modal/AccountModal';
+import AnnounceDetails from '../Modal/AnnounceDetails';
+import Swal from 'sweetalert2';
 
 function Announce() {
 	const [state, setState] = useState({
@@ -14,13 +17,13 @@ function Announce() {
 		announcements: [], // 공지사항 리스트
 		announcementPage: 1, // 현재 페이지
 		announcementTotalPages: 1, // 전체 페이지 수		
-		selectedNotice: false, // 선택된 공지사항
 		NoticeCreate: false, // 공지사항 작성
-		searchQuery: '', //공지사항 검색
 		debouncedQuery: '', // 디바운싱된 검색어
 
 		NoticeTitle: '', // (작성중)공지사항 제목
 		NoticeContent: '', // (작성중)공지사항 내용
+		searchQuery: '', // 공지사항 검색
+		selectedNotice: false, // 선택된 공지사항
 	});
 
 	// 상태 업데이트 함수
@@ -30,10 +33,40 @@ function Announce() {
 
 	const { user } = useUser();
 
+
+	const handleDeleteNotice = async (noticeId) => {
+		try {
+			await axiosInstance.delete(`${API_URLS.NOTICE}`, {
+				data: { board_id: noticeId }
+			});
+			fetchAnnouncements(state.announcementPage);
+			updateState('selectedNotice', false);
+		} 
+		catch (error) {
+			Swal.fire({
+				icon: 'error',
+				title: '공지사항 삭제 실패',
+				text: '서버와 연결할 수 없습니다. 다시 시도해주세요.',
+				confirmButtonText: '확인'
+			  });
+		}
+	};
+
+
+
+
+
+
+
+
+
 	const fetchAnnouncements = useCallback(async (page, query = '') => {
 		try {
 
-			const response = await axiosInstance.get(API_URLS.NOTICE, {
+			// const response = await axiosInstance.get(API_URLS.NOTICE, {
+			// 	params: { page, query } // 검색어가 있으면 포함
+			// });
+			const response = await axios.get(API_URLS.NOTICE, {
 				params: { page, query } // 검색어가 있으면 포함
 			});
 
@@ -96,7 +129,10 @@ function Announce() {
 		const fetchResults = async () => {
 			if (state.debouncedQuery) {
 				try {
-					const response = await axiosInstance.get(API_URLS.NOTICE, {
+					// const response = await axiosInstance.get(API_URLS.NOTICE, {
+					// 	params: { query: state.debouncedQuery }
+					// });
+					const response = await axios.get(API_URLS.NOTICE, {
 						params: { query: state.debouncedQuery }
 					});
 					updateState('announcements', response.data.results); // 검색 결과 저장
@@ -147,22 +183,15 @@ function Announce() {
 		}
 	};
 
-	const handleDeleteNotice = async (noticeId) => {
-		try {
-			await axiosInstance.delete(`${API_URLS.NOTICE}`, {
-				data: { board_id: noticeId }
-			});
-			alert('공지사항 삭제 성공!');
-			fetchAnnouncements(state.announcementPage);
-			updateState('selectedNotice', false);
-		} catch (error) {
-			alert('공지사항 삭제 실패');
-		}
-	};
-
 	useEffect(() => {
 		fetchAnnouncements(state.announcementPage);
 	}, [fetchAnnouncements, state.announcementPage]);
+
+
+
+
+
+
 
 	return (
 		<div className="grid-item Announce">
@@ -228,10 +257,9 @@ function Announce() {
 				</tbody>
 			</table>
 
-
-
+			
 			{state.selectedNotice && (
-				<InformModal
+				<AnnounceDetails
 					title="공지사항"
 					fields={state.selectedNotice}
 					onClose={() => updateState('selectedNotice', false)}
@@ -239,6 +267,9 @@ function Announce() {
 					onDelete={() => handleDeleteNotice(state.selectedNotice[2]?.value)}
 				/>
 			)}
+			{/* 여기부터 확인 */}
+
+			
 			{state.NoticeCreate && (
 				<AccountModal
 					title="공지사항 작성"

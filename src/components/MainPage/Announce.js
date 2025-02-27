@@ -5,8 +5,9 @@ import API_URLS from '../../api/apiURLS';
 import { useUser } from '../../contexts/UserContext';
 import './Announce.css';
 // import InformModal from '../Modal/InformModal';
-import AccountModal from '../Modal/AccountModal';
+// import AccountModal from '../Modal/AccountModal';
 import AnnounceDetails from '../Modal/AnnounceDetails';
+import AnnounceWriting from '../Modal/AnnounceWriting';
 import Swal from 'sweetalert2';
 
 function Announce() {
@@ -17,13 +18,13 @@ function Announce() {
 		announcements: [], // 공지사항 리스트
 		announcementPage: 1, // 현재 페이지
 		announcementTotalPages: 1, // 전체 페이지 수		
-		NoticeCreate: false, // 공지사항 작성
 		debouncedQuery: '', // 디바운싱된 검색어
 
 		NoticeTitle: '', // (작성중)공지사항 제목
 		NoticeContent: '', // (작성중)공지사항 내용
 		searchQuery: '', // 공지사항 검색
-		selectedNotice: false, // 선택된 공지사항
+		selectedNotice: false, // 선택한 공지사항 모달
+		NoticeCreate: false, // 공지사항 작성 모달
 	});
 
 	// 상태 업데이트 함수
@@ -33,7 +34,42 @@ function Announce() {
 
 	const { user } = useUser();
 
+	// 공지사항 작성
+	const handleNoticeSubmit = async (e) => {
+		e.preventDefault();
+		// if (state.NoticeTitle === '' || state.NoticeContent === '') {
+		// 	updateState('error', '제목과 내용을 모두 입력해주세요.');
+		// 	return;
+		// }
 
+		if (state.NoticeTitle === '') {
+			updateState('error', 'NoticeTitle');
+			return;
+		}
+		if (state.NoticeContent === '') {
+			updateState('error', 'NoticeContent');
+			return;
+		}
+
+		try {
+			await axiosInstance.post(API_URLS.NOTICE, {
+				title: state.NoticeTitle, 
+				content: state.NoticeContent 
+			});
+			fetchAnnouncements(state.announcementPage);
+
+			updateState('NoticeCreate', false)
+		} catch (error) {
+			Swal.fire({
+				icon: 'error',
+				title: '공지사항 작성 실패',
+				text: '서버와 연결할 수 없습니다. 다시 시도해주세요.',
+				confirmButtonText: '확인'
+			  });
+		}
+	};
+
+	// 공지사항 삭제
 	const handleDeleteNotice = async (noticeId) => {
 		try {
 			await axiosInstance.delete(`${API_URLS.NOTICE}`, {
@@ -51,6 +87,11 @@ function Announce() {
 			  });
 		}
 	};
+
+
+
+
+
 
 
 
@@ -164,25 +205,7 @@ function Announce() {
 		];
 		updateState('NoticeCreate', fields);
 	};
-
-	const handleNoticeSubmit = async (e) => {
-		e.preventDefault();
-		if (state.NoticeTitle === '' || state.NoticeContent === '') {
-			updateState('error', '제목과 내용을 모두 입력해주세요.');
-			return;
-		}
-
-		try {
-			await axiosInstance.post(API_URLS.NOTICE, { title: state.NoticeTitle, content: state.NoticeContent });
-			alert('공지사항 작성 성공!');
-			fetchAnnouncements(state.announcementPage);
-
-			updateState('NoticeCreate', false)
-		} catch (error) {
-			alert('공지사항 작성 실패');
-		}
-	};
-
+	
 	useEffect(() => {
 		fetchAnnouncements(state.announcementPage);
 	}, [fetchAnnouncements, state.announcementPage]);
@@ -267,11 +290,9 @@ function Announce() {
 					onDelete={() => handleDeleteNotice(state.selectedNotice[2]?.value)}
 				/>
 			)}
-			{/* 여기부터 확인 */}
 
-			
 			{state.NoticeCreate && (
-				<AccountModal
+				<AnnounceWriting
 					title="공지사항 작성"
 					fields={[
 						{
@@ -299,8 +320,6 @@ function Announce() {
 					error={state.error}
 				/>
 			)}
-
-
 		</div>
 	);
 }

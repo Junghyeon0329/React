@@ -1,0 +1,46 @@
+.field-container.error .field-input {
+    border: 2px solid red;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.input-error {
+    border: 2px solid red;
+}
+
+.content-field {
+    text-align: left;
+    min-height: 100px;
+    max-height: 300px;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+  }
+  
+  .modal-title {
+    margin: 0;
+  }
+  
+  .close-button {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0;
+  }
+  

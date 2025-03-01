@@ -1,5 +1,5 @@
 import React from 'react';
-import './AnnounceDetails.css'; 
+import './AnnounceDetails.css';
 
 const AnnounceDetails = ({ title, fields, onClose, isAdmin, onDelete }) => {
   return (
@@ -17,7 +17,8 @@ const AnnounceDetails = ({ title, fields, onClose, isAdmin, onDelete }) => {
         <div className="modal-body">
           {fields.map((field, index) => {
             if (field.label === 'ID') return null; // 테이블 번호            
-            const fieldClass = field.label === "내용" && title === "공지사항" ? "content-field" : "";
+            const fieldClass = field.label === "내용" && title === "공지사항" ? 
+                "content-field" : "";
 
             return (
               <div key={index} className="field-container">
